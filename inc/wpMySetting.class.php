@@ -1,5 +1,5 @@
 <?php
-class WP_My_Setting{
+class wpMySetting{
 
     public $except_len = 50;
 
@@ -188,6 +188,5 @@ class WP_My_Setting{
           return $pid;
         }
     }
-
-
 }
+$mySetting = new wpMySetting;
