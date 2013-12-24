@@ -2,11 +2,12 @@
 class setCustomPostType{
 
     public $postTypeTitle  = 'タイトル';
-    public $postTypeSlug   = 'store_banner';
-    public $taxonomieName  = 'カテゴリ';
-    public $taxonomieSlug  = 'category';
+    public $postTypeSlug   = 'slug';
     public $contentSupport = array('title','editor');
     public $customPostType = 'post';
+
+    public $taxonomieName  = 'カテゴリ';
+    public $taxonomieSlug  = 'category';
 
     public function __construct(){
 
@@ -20,7 +21,7 @@ class setCustomPostType{
         add_action('right_now_content_table_end', array($this,'custom_post_dashboard_set'));
 
         // カテゴリページへの項目追加
-        add_filter('manage_edit-past_results_columns', array($this,'manage_posts_columns'));
+        add_filter('manage_edit-'.$this->postTypeSlug.'_columns', array($this,'manage_posts_columns'));
         add_action('manage_posts_custom_column', array($this,'add_column'), 10, 2);
 
     }
@@ -49,13 +50,14 @@ class setCustomPostType{
     public function add_column($column_name, $post_id){
         //カテゴリー名取得
         if( $column_name == 'fcategory1' ) {
-            $fcategory = get_the_term_list($post_id, $this->postTypeSlug);
-        }
-        //該当カテゴリーがない場合「なし」を表示
-        if ( isset($fcategory) && $fcategory ) {
-            echo $fcategory;
-        } else {
-            echo __('None');
+            $fcategory = get_the_term_list($post_id, $this->taxonomieSlug);
+
+            //該当カテゴリーがない場合「なし」を表示
+            if ( isset($fcategory) && $fcategory ) {
+                echo $fcategory;
+            } else {
+                echo __('None');
+            }
         }
     }
 
