@@ -9,6 +9,9 @@ class setCustomPostType{
     public $taxonomieName  = 'カテゴリ';
     public $taxonomieSlug  = 'category';
 
+    //管理メニューへ表示知るユーザーID
+    public $adminUser  = array('admin');
+
     public function __construct(){
 
         // カスタム投稿タイプの追加
@@ -23,6 +26,9 @@ class setCustomPostType{
         // カテゴリページへの項目追加
         add_filter('manage_edit-'.$this->postTypeSlug.'_columns', array($this,'manage_posts_columns'));
         add_action('manage_posts_custom_column', array($this,'add_column'), 10, 2);
+
+        // 編集ユーザー制限の追加
+        add_action('admin_menu', array($this,'remove_menus_custom'));
 
     }
 
@@ -41,20 +47,43 @@ class setCustomPostType{
         $this->custom_post_dashboard($this->postTypeSlug);
     }
 
+    /* メニューを非表示 */
+    public function remove_menus_custom (){
+        global $menu;
+        global $current_user;
+        get_currentuserinfo();
+        if(!in_array($current_user->user_login, $this->adminUser)) {
+            $restricted = array(
+                __($this->postTypeTitle)
+            );
+            end ($menu);
+            while (prev($menu)){
+                $value = explode(' ',$menu[key($menu)][0]);
+                if(in_array($value[0] != NULL?$value[0]:"" , $restricted)){
+                    unset($menu[key($menu)]);
+                }
+            }
+        }
+    }
+
 
     public function manage_posts_columns($columns) {
-        $columns['fcategory1'] = $this->taxonomieName ;
+        $columns['fcategory'] = $this->taxonomieName ;
         return $columns;
     }
 
     public function add_column($column_name, $post_id){
         //カテゴリー名取得
-        if( $column_name == 'fcategory1' ) {
-            $fcategory = get_the_term_list($post_id, $this->taxonomieSlug);
-
+        if( $column_name == 'fcategory' ) {
+            $fcategory = get_the_terms($post_id, $this->taxonomieSlug);
             //該当カテゴリーがない場合「なし」を表示
             if ( isset($fcategory) && $fcategory ) {
-                echo $fcategory;
+                $ohtml = "";
+                foreach( $fcategory as $term ) {
+                    $ohtml .= $term->name." , ";
+                }
+                echo substr($ohtml, 0, -3);
+                // echo $fcategory;
             } else {
                 echo __('None');
             }
@@ -98,6 +127,10 @@ class setCustomPostType{
             'supports' => $supports
         );
         register_post_type($slug, $args);
+        flush_rewrite_rules(false);
+
+        // すでにあるタクソノミーを利用する場合
+        // register_taxonomy_for_object_type('すでにあるタクソノミースラッグ:categoryなど', $slug);
     }
 
     public function custom_taxonomies($taxName, $taxSlug, $postType){
