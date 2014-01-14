@@ -9,7 +9,7 @@ class setCustomPostType{
     public $taxonomieName  = 'カテゴリ';
     public $taxonomieSlug  = 'category';
 
-    //管理メニューへ表示知るユーザーID
+    //管理メニューへ表示するユーザーID
     public $adminUser  = array('admin');
 
     public function __construct(){
