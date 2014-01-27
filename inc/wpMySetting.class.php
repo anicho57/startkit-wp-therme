@@ -34,6 +34,12 @@ class wpMySetting{
         return false;
     }
 
+    function disable_update_notice(){
+
+        // Disable All WordPress Updates プラグインを流用
+        require( get_template_directory() . '/inc/disable-updates.php' );
+    }
+
     function change_excerpt_more($more) {
         return '';
     }

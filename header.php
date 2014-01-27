@@ -9,7 +9,7 @@
 	<meta name="keywords" content="" />
 	<meta name="viewport" content="" />
 
-	<link href="<?php echo BASE_PATH ?>css/import.css" rel="stylesheet" />
+	<link href="<?php echo get_bloginfo( "stylesheet_url" ) ?>" rel="stylesheet" />
 
 <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
@@ -26,12 +26,10 @@
 
 <header id="header">
 
-	<h1 id="logo"><a href="/" title=""></a></h1>
+	<h1 id="logo"><a href="<?php echo BASE_PATH ?>" title=""><?php bloginfo('name'); ?></a></h1>
 
 	<nav id="gNav" role="navigation">
-		<ul>
-			<li id="gn01"><a href="#" title=""></a></li>
-		</ul>
+<?php wp_nav_menu( array( 'menu_class' => 'nav-menu' ) ); ?>
 	</nav>
 
 </header>
