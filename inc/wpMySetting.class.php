@@ -7,10 +7,6 @@ class wpMySetting{
      * コンストラクタ
      */
     public function __construct(){
-        //ドキュメントルートのパスの設定
-        define('BASE_PATH',$this->get_base_path());
-        // page id
-        define('PAGE_ID',$this->get_page_id());
 
         // 不要なhead出力削除
         $this->remove_head();

@@ -2,7 +2,7 @@
 <footer id="footer" role="contentinfo">
 
 	<div id="pageTop"><a href="#gHeader">↑先頭へ</a></div>
-	<div id="copyright"><small class="wrap">Copyright &copy; 2003<script>t=new Date();document.write(' - '+t.getFullYear());</script> Office Tug.</small></div>
+	<div id="copyright"><small class="wrap">Copyright &copy; 2003<script>t=new Date();document.write(' - '+t.getFullYear());</script> authorName.</small></div>
 
 </footer><!-- /#footer -->
 

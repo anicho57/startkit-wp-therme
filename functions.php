@@ -2,6 +2,11 @@
 // require( get_template_directory() . '/inc/setCustomPostType.class.php' );
 require( get_template_directory() . '/inc/wpMySetting.class.php' );
 
+//ドキュメントルートのパスの設定
+define('BASE_PATH',$mySetting->get_base_path());
+// page id
+define('PAGE_ID',$mySetting->get_page_id());
+
 // 自動pタグ付加を無効
 $mySetting->disable_content_autop();
 $mySetting->disable_excerpt_autop();
