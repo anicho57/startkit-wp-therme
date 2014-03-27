@@ -32,6 +32,34 @@ if (is_home()) : //ホームページの場合?>
 
 <?php endif; ?>
 
+	<aside id="blogMenu">
+		<dl class="cate">
+			<dt>カテゴリー</dt>
+			<dd>
+				<ul>
+					<?php wp_list_cats('optioncount=1'); ?>
+				</ul>
+			</dd>
+		</dl>
+		<dl class="new">
+			<dt>最新の記事</dt>
+			<dd>
+				<ul>
+					<?php wp_get_archives('type=postbypost&limit=10'); ?>
+				</ul>
+			</dd>
+		</dl>
+		<dl class="archive">
+			<dt>アーカイブ</dt>
+			<dd>
+				<select name="archive-dropdown" onchange="document.location.href=this.options[this.selectedIndex].value;">
+					<?php wp_get_archives( array( 'type' => 'monthly', 'format' => 'option', 'show_post_count' => 1 ) ); ?>
+				</select>
+			</dd>
+		</dl>
+	</aside>
+
+
 
 
 </div>

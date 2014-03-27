@@ -1,8 +1,8 @@
 <?php get_header(); ?>
 
-<main id="main" role="main">
+<div id="contents">
 
-	<section id="contents">
+<main id="main" role="main">
 
 <?php get_template_part('parts/pankuzu'); ?>
 
@@ -15,19 +15,18 @@
 		<?php endwhile; ?>
 		</ul>
 
-
 	<?php else : ?>
 		<p class="p20"><strong>検索結果は0件です。</strong></p>
 		<p>検索された語句を含む記事が存在しないか、該当する記事が見つからりません。<br />違う語句でもう一度検索してみてください。</p>
 
 	<?php endif; ?>
 
-	</section>
-	<!-- /#contents -->
-
-	<?php get_sidebar(); ?>
-
 </main>
 <!-- /#main -->
+
+<?php get_sidebar(); ?>
+
+</div>
+<!-- /#contents -->
 
 <?php get_footer(); ?>

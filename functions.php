@@ -8,7 +8,7 @@ define('BASE_PATH',$mySetting->get_base_path());
 define('PAGE_ID',$mySetting->get_page_id());
 
 // 自動pタグ付加を無効
-$mySetting->disable_content_autop();
+// $mySetting->disable_content_autop();
 $mySetting->disable_excerpt_autop();
 
 // 更新通知の無効
@@ -19,6 +19,12 @@ $mySetting->disable_update_notice();
 $mySetting->use_eyecatch();
 
 
+// wp_list_categoriesの記事数をアンカー内に入れる
+$mySetting->list_categories_ancher_in_ex();
+
 // 抜粋文字数変更
 $mySetting->except_len = 50;
 $mySetting->change_excerpt_mblength_ex();
+
+// 画像を追加する場合
+// add_image_size('name',70 ,70 ,true);

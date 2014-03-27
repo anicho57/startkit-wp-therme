@@ -17,18 +17,14 @@ class setCustomPostType{
         // カスタム投稿タイプの追加
         add_action('init', array($this,'custom_post_type_set'));
 
-        // カスタムタクソノミーを作成
-        add_action('init', array($this,'custom_taxonomies_set'), 0);
-
         // ダッシュボードへ表示
         add_action('right_now_content_table_end', array($this,'custom_post_dashboard_set'));
 
-        // カテゴリページへの項目追加
-        add_filter('manage_edit-'.$this->postTypeSlug.'_columns', array($this,'manage_posts_columns'));
-        add_action('manage_posts_custom_column', array($this,'add_column'), 10, 2);
-
         // 編集ユーザー制限の追加
-        add_action('admin_menu', array($this,'remove_menus_custom'));
+        // add_action('admin_menu', array($this,'remove_menus_custom'));
+
+        // カスタムタクソノミーを設定
+        // $this->custom_taxonomies_ini();
 
     }
 
@@ -45,6 +41,14 @@ class setCustomPostType{
     //　ダッシュボード設定
     public function custom_post_dashboard_set(){
         $this->custom_post_dashboard($this->postTypeSlug);
+    }
+
+    public function custom_taxonomies_ini(){
+        // カスタムタクソノミーを作成
+        add_action('init', array($this,'custom_taxonomies_set'), 0);
+        // カテゴリページへの項目追加
+        add_filter('manage_edit-'.$this->postTypeSlug.'_columns', array($this,'manage_posts_columns'));
+        add_action('manage_posts_custom_column', array($this,'add_column'), 10, 2);
     }
 
     /* メニューを非表示 */
@@ -119,7 +123,7 @@ class setCustomPostType{
             'publicly_queryable' => true,
             'show_ui' => true,
             'query_var' => true,
-            'rewrite' => true,
+            'rewrite' => array('with_front'=>false),
             'capability_type' => $capability_type,
             'hierarchical' => false,
             'menu_position' => $menu_position,

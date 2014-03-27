@@ -11,7 +11,7 @@ class wpMySetting{
         // 不要なhead出力削除
         $this->remove_head();
 
-        // moreの...を削除
+        // moreの...を変更
         add_filter('excerpt_more', array($this,'change_excerpt_more'));
 
         // カスタムフィールドのcss/js追加
@@ -94,34 +94,40 @@ class wpMySetting{
         }
     }
 
+    // wp_list_categoriesのFilter
+    function list_categories_ancher_in_ex(){
+        add_filter( 'wp_list_categories', array($this,'list_categories_ancher_in'), 10, 2 );
+    }
+    function list_categories_ancher_in( $output, $args ) {
+        $output = preg_replace('/<\/a>\s*\((\d+)\)/',' ($1)</a>',$output);
+        return $output;
+    }
+
     /*
-     * サムネイルを呼ぶ関数　ちょいと不完全!?
+     * 所属画像を返す関数
      *
      *  $post_id 画像を取得したい記事のID
      *  $size 取得したい画像のサイズ（thumbnail, medium, large, full ）
      *  $order　ギャラリーでの順序で入れてる数字。2にしたら2番目の画像
-     *  $max $orderで入れた数字から何枚目の画像まで取得するか指定
      * */
-    function get_the_post_image($postid,$size="thumbnail",$order=0,$max=null) {
+    function get_post_image($postid,$size="thumbnail",$order=0) {
         $attachments = get_children(array('post_parent' => $postid, 'post_type' => 'attachment', 'post_mime_type' => 'image'));
         if ( is_array($attachments) ){
-            foreach ($attachments as $key => $row) {
-                $mo[$key]  = $row->menu_order;
-                $aid[] = $row->ID;
-            }
-            // array_multisort($mo, SORT_ASC, $aid, SORT_DESC, $attachments , SORT_ASC);
-            $max = empty($max)? $order+1 :$max;
-            array_multisort($aid);
-            for($i=$order;$i<$max;$i++){
-                $img_tag = wp_get_attachment_image( $aid[$i], $size );
-                if ($img_tag != ""){
-                    return $img_tag;
-                }else{
-                    return false;
-                }
-            }
+            $keys = array_keys($attachments);
+            $num=$keys[$order];
+            $img = wp_get_attachment_image($num,$size);
+            return $img;
         }
     }
+
+    /*
+     * 所属画像を表示する関数
+     *
+     * */
+    function the_post_image($postid,$size="thumbnail",$order=0) {
+        echo $this->get_post_image($postid,$size,$order);
+    }
+
 
     /**
      * 記事内のリンクを取得
