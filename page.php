@@ -1,8 +1,8 @@
 <?php get_header(); ?>
 
-<main id="main" role="main">
+<div id="contents">
 
-	<section id="contents">
+<main id="main" role="main">
 
 <?php get_template_part('parts/pankuzu'); ?>
 
@@ -21,12 +21,12 @@
 	<?php endwhile; ?>
 <?php endif; ?>
 
-	</section>
-	<!-- /#contents -->
-
-	<?php get_sidebar(); ?>
-
 </main>
 <!-- /#main -->
+
+<?php get_sidebar(); ?>
+
+</div>
+<!-- /#contents -->
 
 <?php get_footer(); ?>

@@ -14,10 +14,11 @@ $mySetting->disable_excerpt_autop();
 // 更新通知の無効
 $mySetting->disable_update_notice();
 
-
 // アイキャッチ機能を使う
-$mySetting->use_eyecatch();
+// $mySetting->use_eyecatch();
 
+// 画像を追加する場合
+// add_image_size('name',70 ,70 ,true);
 
 // wp_list_categoriesの記事数をアンカー内に入れる
 $mySetting->list_categories_ancher_in_ex();
@@ -26,5 +27,5 @@ $mySetting->list_categories_ancher_in_ex();
 $mySetting->except_len = 50;
 $mySetting->change_excerpt_mblength_ex();
 
-// 画像を追加する場合
-// add_image_size('name',70 ,70 ,true);
+//固定ページのビジュアルエディタを無効
+// $mySetting->desable_visual_editor_in_page_ex();

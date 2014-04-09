@@ -94,6 +94,23 @@ class wpMySetting{
         }
     }
 
+    // 固定ページのビジュアルエディターを無効
+    function desable_visual_editor_in_page_ex(){
+        add_action( 'load-post.php', array($this,'disable_visual_editor_in_page' ));
+        add_action( 'load-post-new.php', array($this,'disable_visual_editor_in_page' ));
+    }
+    function disable_visual_editor_in_page(){
+        global $current_user;
+        global $typenow;
+        get_currentuserinfo();
+        if( $typenow == 'page' ){
+            add_filter('user_can_richedit', array($this,'disable_visual_editor_filter'));
+        }
+    }
+    function disable_visual_editor_filter(){
+        return false;
+    }
+
     // wp_list_categoriesのFilter
     function list_categories_ancher_in_ex(){
         add_filter( 'wp_list_categories', array($this,'list_categories_ancher_in'), 10, 2 );
@@ -127,6 +144,34 @@ class wpMySetting{
     function the_post_image($postid,$size="thumbnail",$order=0) {
         echo $this->get_post_image($postid,$size,$order);
     }
+
+    /**
+     * ファイルサイズ取得
+     * @param  [type] $filepath ファイルのパス（サーバー絶対パス）
+     * @return [type]           ファイルサイズ
+     */
+    function get_file_size($filepath) {
+        // $mfile　= ABSPATH.$file;
+        if ( is_file($filepath) ){
+            $filesize = filesize($filepath);
+            $s = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+            $e = floor(log($filesize)/log(1024));
+            if($e==0 || $e==1) {
+                $format = '%d ';
+            }else{
+                $format = '%.1f ';
+            }
+            $filesize = sprintf($format.$s[$e], ($filesize/pow(1024, floor($e))));
+        }else{
+            $filesize="ファイルがみつかりません";
+        }
+        return $filesize;
+    }
+
+    function the_file_size($filepath){
+        echo $this->get_file_size($filepath);
+    }
+
 
 
     /**

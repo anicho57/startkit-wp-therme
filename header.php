@@ -3,11 +3,12 @@
 <head>
 
 	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
 
 	<title><?php wp_title('| ', 1, 'right'); ?><?php bloginfo('name'); ?></title>
 
+	<meta name="description" content="" />
 	<meta name="keywords" content="" />
-	<meta name="viewport" content="" />
 
 	<link href="<?php echo get_bloginfo( "stylesheet_url" ) ?>" rel="stylesheet" />
 
