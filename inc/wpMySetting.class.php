@@ -51,6 +51,23 @@ class wpMySetting{
         remove_filter('the_excerpt',  'wpautop');
     }
 
+    // 固定ページのビジュアルエディターを無効
+    function desable_visual_editor_in_page_ex(){
+        add_action( 'load-post.php', array($this,'disable_visual_editor_in_page' ));
+        add_action( 'load-post-new.php', array($this,'disable_visual_editor_in_page' ));
+    }
+    function disable_visual_editor_in_page(){
+        global $current_user;
+        global $typenow;
+        get_currentuserinfo();
+        if( $typenow == 'page' ){
+            add_filter('user_can_richedit', array($this,'disable_visual_editor_filter'));
+        }
+    }
+    function disable_visual_editor_filter(){
+        return false;
+    }
+
     // アイキャッチ機能の有効化
     function use_eyecatch(){
         add_theme_support('post-thumbnails', array( 'post','page' ));
@@ -94,23 +111,6 @@ class wpMySetting{
         }
     }
 
-    // 固定ページのビジュアルエディターを無効
-    function desable_visual_editor_in_page_ex(){
-        add_action( 'load-post.php', array($this,'disable_visual_editor_in_page' ));
-        add_action( 'load-post-new.php', array($this,'disable_visual_editor_in_page' ));
-    }
-    function disable_visual_editor_in_page(){
-        global $current_user;
-        global $typenow;
-        get_currentuserinfo();
-        if( $typenow == 'page' ){
-            add_filter('user_can_richedit', array($this,'disable_visual_editor_filter'));
-        }
-    }
-    function disable_visual_editor_filter(){
-        return false;
-    }
-
     // wp_list_categoriesのFilter
     function list_categories_ancher_in_ex(){
         add_filter( 'wp_list_categories', array($this,'list_categories_ancher_in'), 10, 2 );
@@ -118,6 +118,25 @@ class wpMySetting{
     function list_categories_ancher_in( $output, $args ) {
         $output = preg_replace('/<\/a>\s*\((\d+)\)/',' ($1)</a>',$output);
         return $output;
+    }
+
+    /**
+     * 記事内のサムネイル画像を返す。
+     * 記事に画像の登録がない場合はコンテンツ内から検索して取得する。
+     * それでもない場合はダミー画像を表示(images/noImage.png)
+     * @return img要素
+     */
+    function get_post_thumb_image(){
+        global $post, $posts;
+        $image = $this->get_post_image($post->ID,"thumbnail");
+        if(!$image){
+            $image_url = $this->get_content_image_url();
+            $image = '<img src="'.$image_url.'" width="'.get_option('thumbnail_size_w').'" alt="" />';
+        }
+        return $image;
+    }
+    function the_post_thumb_image(){
+        echo $this->get_post_thumb_image();
     }
 
     /*
@@ -136,13 +155,26 @@ class wpMySetting{
             return $img;
         }
     }
-
-    /*
-     * 所属画像を表示する関数
-     *
-     * */
     function the_post_image($postid,$size="thumbnail",$order=0) {
         echo $this->get_post_image($postid,$size,$order);
+    }
+
+    /**
+     * contents内を検索して画像を取得
+     * ない場合はダミー画像を返す(images/noImage.png)
+     */
+    function get_content_image_url() {
+        global $post, $posts;
+        $first_img = '';
+        ob_start();
+        ob_end_clean();
+        $output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
+        $first_img = $matches [1] [0];
+
+        if(empty($first_img)){ //Defines a default image
+            $first_img = $this->get_base_path()."images/noImage.png";
+        }
+        return $first_img;
     }
 
     /**
@@ -173,10 +205,8 @@ class wpMySetting{
     }
 
 
-
     /**
-     * 記事内のリンクを取得
-     * @return [type] [description]
+     * 引数内のテキストから最初のURLを返す
      */
     function get_text_in_url($text){
         $urllist = array();
@@ -187,7 +217,9 @@ class wpMySetting{
             return $urllist[0];
         }
     }
-
+    /**
+     * 引数内のテキストから最初のimg要素を返す
+     */
     function get_text_in_img($text){
         $urllist = array();
         if( preg_match_all('/<img(.+?)>/', $text, $matchs) !== FALSE){
@@ -198,29 +230,14 @@ class wpMySetting{
         }
     }
 
-    // 記事内の画像を取ってくる
-    function get_content_image_url() {
+    function get_ref_site_image(){
         global $post, $posts;
-        $first_img = '';
-        ob_start();
-        ob_end_clean();
-        $output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
-        $first_img = $matches [1] [0];
-
-        if(empty($first_img)){ //Defines a default image
-            $first_img = "/no-image.gif";
-        }
-        return $first_img;
-    }
-
-    function get_ref_site_image($postid ,$text){
-        $link  = $this->get_text_in_url($text);
-        $image = $this->get_the_post_image($postid,"medium");
+        $link  = $this->get_text_in_url($post->post_content);
+        $image = $this->get_post_image($post->ID,"medium");
         if ($imges == "") $image = $this->get_text_in_img($text);
         $html = '<a href="' . $link . '">'. $image . '</a>';
         return $html;
     }
-
 
     function get_base_path(){
         return str_replace("index.php","",$_SERVER['PHP_SELF']);
