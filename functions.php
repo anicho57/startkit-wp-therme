@@ -29,3 +29,6 @@ $mySetting->change_excerpt_mblength_ex();
 
 //固定ページのビジュアルエディタを無効
 // $mySetting->desable_visual_editor_in_page_ex();
+
+// tinymceのメニューカスタマイズ
+// $mySetting->custom_editor_settings_ex();

@@ -17,6 +17,9 @@ class wpMySetting{
         // カスタムフィールドのcss/js追加
         add_action('wp_head',array($this,'add_stylesheet'));
         add_action('wp_head',array($this,'add_javascript'));
+
+        // エディタスタイルシートの追加 (themesdir/)editor-style.css
+        add_editor_style();
     }
 
     function remove_head(){
@@ -99,6 +102,16 @@ class wpMySetting{
         add_filter('excerpt_mblength', array($this,'change_excerpt_mblength'));
     }
 
+    // tinymce custom
+    // memo @link http://wpengineer.com/1963/customize-wordpress-wysiwyg-editor/
+    function custom_editor_settings( $initArray ){
+        $initArray['theme_advanced_buttons1'] = 'bold,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,spellchecker,fullscreen,wp_adv';
+        $initArray['theme_advanced_buttons2'] = 'underline,forecolor,|,pastetext,pasteword,removeformat,|,media,|,outdent,indent,|,undo,redo,wp_help';
+        return $initArray;
+    }
+    function custom_editor_settings_ex(){
+        add_filter( 'tiny_mce_before_init', array($this,'custom_editor_settings' ));
+    }
 
     //指定文字数で切る
     public static function truncate($str, $limit = 80, $etc = '...') {
