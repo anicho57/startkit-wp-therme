@@ -103,8 +103,13 @@ class wpMySetting{
     }
 
     // tinymce custom
-    // memo @link http://wpengineer.com/1963/customize-wordpress-wysiwyg-editor/
+    // memo  @link http://wpengineer.com/1963/customize-wordpress-wysiwyg-editor/
+    // Codex @link https://codex.wordpress.org/TinyMCE
     function custom_editor_settings( $initArray ){
+        //tinymce v4
+        $initArray['toolbar1'] = 'bold,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,spellchecker,fullscreen,wp_adv';
+        $initArray['toolbar2'] = 'underline,forecolor,|,pastetext,pasteword,removeformat,|,media,|,outdent,indent,|,undo,redo,wp_help';
+        //tinymce v3
         $initArray['theme_advanced_buttons1'] = 'bold,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,spellchecker,fullscreen,wp_adv';
         $initArray['theme_advanced_buttons2'] = 'underline,forecolor,|,pastetext,pasteword,removeformat,|,media,|,outdent,indent,|,undo,redo,wp_help';
         return $initArray;

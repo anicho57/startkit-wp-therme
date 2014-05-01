@@ -4,10 +4,14 @@ class setCustomPostType{
     public $postTypeTitle  = 'タイトル';
     public $postTypeSlug   = 'slug';
     public $contentSupport = array('title','editor');
+    // title,editor,author,thumbnail,excerpt,trackbacks,custom-fields,comments,revisions,page-attributes,post-formats,
     public $customPostType = 'post';
 
     public $taxonomieName  = 'カテゴリ';
     public $taxonomieSlug  = 'category';
+
+    //メニューアイコン
+    public $menuIcon = '\f161'; //@link http://melchoyce.github.io/dashicons/
 
     //管理メニューへ表示するユーザーID
     public $adminUser  = array('admin');
@@ -25,6 +29,9 @@ class setCustomPostType{
 
         // カスタムタクソノミーを設定
         // $this->custom_taxonomies_ini();
+
+        // メニューアイコンの登録
+        add_action( 'admin_head', array($this,'add_menu_icons_styles' ));
 
     }
 
@@ -51,6 +58,15 @@ class setCustomPostType{
         add_action('manage_posts_custom_column', array($this,'add_column'), 10, 2);
     }
 
+    // メニューアイオンのスタイル追加
+    public function add_menu_icons_styles(){
+         echo '<style>
+              #adminmenu #menu-posts-'.$this->postTypeSlug.' div.wp-menu-image:before {
+                   content: "'.$this->menuIcon.'";
+              }
+         </style>';
+    }
+
     /* メニューを非表示 */
     public function remove_menus_custom (){
         global $menu;
@@ -69,7 +85,6 @@ class setCustomPostType{
             }
         }
     }
-
 
     public function manage_posts_columns($columns) {
         $columns['fcategory'] = $this->taxonomieName ;
