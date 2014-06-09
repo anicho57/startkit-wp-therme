@@ -1,8 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+
+	<meta charset="utf-8" />
+
+	<title><?php wp_title('| ', 1, 'right'); ?><?php bloginfo('name'); ?></title>
+
+<?php get_template_part('parts/headread'); ?>
+
+</head>
+<body id="<?php echo PAGE_ID;?>">
+
 <?php get_header(); ?>
 
 <div id="contents">
 
-<main id="main" role="main">
+<div id="mainContent">
+<main role="main">
 
 <?php get_template_part('parts/pankuzu'); ?>
 
@@ -19,7 +33,8 @@
 <?php get_template_part('parts/pager'); ?>
 
 </main>
-<!-- /#main -->
+</div>
+<!-- /#mainContent -->
 
 <?php get_sidebar(); ?>
 
@@ -27,3 +42,6 @@
 <!-- /#contents -->
 
 <?php get_footer(); ?>
+
+</body>
+</html>

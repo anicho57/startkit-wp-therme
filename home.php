@@ -1,8 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+
+	<meta charset="utf-8" />
+
+	<title><?php wp_title('| ', 1, 'right'); ?><?php bloginfo('name'); ?></title>
+
+<?php get_template_part('parts/headread'); ?>
+
+</head>
+<body id="<?php echo PAGE_ID;?>">
+
 <?php get_header(); ?>
 
 <div id="eyeCatch" style="background-image:url(../images/home/eyeCatchBg<?php echo sprintf("%02d", rand(1,3)) ?>.png)"></div>
 
-<main id="main" role="main">
+<div id="mainContent">
+<main role="main">
 
 <?php if (have_posts()) : ?>
 
@@ -47,7 +61,11 @@ if ($myposts) : ?>
 <?php endif ?>
 </section>
 
-</main><!-- /#main -->
-
+</main>
+</div>
+<!-- /#mainContent -->
 
 <?php get_footer(); ?>
+
+</body>
+</html>

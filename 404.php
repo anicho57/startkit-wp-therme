@@ -1,8 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+
+	<meta charset="utf-8" />
+
+	<title><?php wp_title('| ', 1, 'right'); ?><?php bloginfo('name'); ?></title>
+
+<?php get_template_part('parts/headread'); ?>
+
+</head>
+<body id="<?php echo PAGE_ID;?>">
+
 <?php get_header(); ?>
 
-<main id="main" role="main">
+<div id="contents">
 
-<?php get_template_part('pankuzu'); ?>
+<div id="mainContent">
+<main role="main">
+
+<?php get_template_part('parts/pankuzu'); ?>
 
     <h2 class="tit01 mb20">404 File Not Found</h2>
     <p>
@@ -12,6 +28,15 @@
     <p class="mt20"><a class="btn01" href="/">トップページ</a></p>
 
 </main>
-<!-- /#main -->
+</div>
+<!-- /#mainContent -->
+
+<?php get_sidebar(); ?>
+
+</div>
+<!-- /#contents -->
 
 <?php get_footer(); ?>
+
+</body>
+</html>
