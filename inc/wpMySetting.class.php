@@ -109,6 +109,7 @@ class wpMySetting{
         //tinymce v4
         $initArray['toolbar1'] = 'bold,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,spellchecker,fullscreen,wp_adv';
         $initArray['toolbar2'] = 'underline,forecolor,|,pastetext,pasteword,removeformat,|,media,|,outdent,indent,|,undo,redo,wp_help';
+        // $initArray['block_formats'] = "Paragraph=p; 見出し=h2";
         //tinymce v3
         $initArray['theme_advanced_buttons1'] = 'bold,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,spellchecker,fullscreen,wp_adv';
         $initArray['theme_advanced_buttons2'] = 'underline,forecolor,|,pastetext,pasteword,removeformat,|,media,|,outdent,indent,|,undo,redo,wp_help';
@@ -117,6 +118,29 @@ class wpMySetting{
     function custom_editor_settings_ex(){
         add_filter( 'tiny_mce_before_init', array($this,'custom_editor_settings' ));
     }
+
+    // 指定管理メニューの削除
+    function remove_admin_menus () {
+        global $menu;
+        $user = wp_get_current_user();
+        if($user->data->user_login == 'staff'){
+            $removeMenu = array(
+                    '固定ページ',
+                    'コメント',
+                    'ツール',
+                );
+            end ($menu);
+            foreach ($menu as $key => $value) {
+                $name = explode(' <',$value[0]);
+                if (in_array(reset($name),$removeMenu))
+                    unset($menu[$key]);
+            }
+        }
+    }
+    function remove_admin_menus_ex(){
+        add_action( 'admin_menu', array($this,'remove_admin_menus' ));
+    }
+
 
     //指定文字数で切る
     public static function truncate($str, $limit = 80, $etc = '...') {
@@ -264,7 +288,7 @@ class wpMySetting{
     function get_path(){
         $reqUri = $_SERVER['REQUEST_URI'];
         $basePath = $this->get_base_path();
-        return str_replace($basePath,"",$reqUri);
+        return substr($reqUri,strlen($basePath),strlen($reqUri));
     }
 
     function get_page_id(){

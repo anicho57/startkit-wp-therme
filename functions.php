@@ -32,3 +32,6 @@ $mySetting->change_excerpt_mblength_ex();
 
 // tinymceのメニューカスタマイズ
 // $mySetting->custom_editor_settings_ex();
+
+// 指定管理メニューの削除
+// $mySetting->remove_admin_menus_ex();
