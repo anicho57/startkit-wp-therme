@@ -21,12 +21,21 @@
 <?php get_template_part('parts/pankuzu'); ?>
 
 <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
-	<article id="post-<?php the_ID(); ?>" <?php post_class(); ?> >
-		<h2 class="entry-title"><a href="<?php the_permalink() ?>" title="<?php the_title_attribute() ?>" rel="bookmark"><?php the_title() ?></a></h2>
-		<div class="entry-body">
-			<?php the_content('&raquo; 続きを読む'); ?>
+	<article>
+		<figure><a href="<?php the_permalink() ?>" ><?php $mySetting->the_post_thumb_image() ?></a></figure>
+		<div class="body">
+			<h2><a href="<?php the_permalink() ?>" ><?php the_title() ?></a></h2>
+			<p class="except">
+				<?php the_excerpt(); ?>
+				... <span><a href="<?php the_permalink() ?>" >続きを読む</a></span>
+			</p>
+			<p class="meta">
+				<time datetime="<?php the_time('Y-m-d'); ?>"><?php the_time('Y-m-d'); ?></time>
+				<span class="category"><?php the_category(','); ?></span>
+				<span class="tag"><?php the_tags('' , ', ' , ''); ?></span>
+				<?php edit_post_link('この記事を編集する'); ?>
+			</p>
 		</div>
-		<p class="entry-meta">投稿日：<?php the_time('Y-m-d'); ?> | コメント数：<?php comments_popup_link('0','1','%'); ?> | カテゴリ：<?php the_category(', '); ?> | タグ：<?php the_tags('' , ', ' , ''); ?><?php edit_post_link('| <strong>この記事を編集する</strong>'); ?></p>
 	</article>
 <?php endwhile; endif; ?>
 

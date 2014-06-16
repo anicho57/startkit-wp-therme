@@ -1,4 +1,9 @@
-<?php if(is_archive()): ?>
+<?php if(is_single()): ?>
+<ul class="singlePager">
+	<li class="prev"><?php previous_post_link('%link','前に進む &gt;',false) ?></li>
+	<li class="next"><?php next_post_link('%link','&lt; 次に進む',false) ?></li>
+</ul>
+<?php else: ?>
 <div class="pager">
 	<?php global $wp_rewrite;
 	$paginate_base = get_pagenum_link(1);
@@ -21,9 +26,4 @@
 		'next_text' => '次に進む',
 	)); ?>
 </div>
-<?php elseif (is_single()): ?>
-<ul class="singlePager">
-	<li class="prev"><?php previous_post_link('%link','前に進む &gt;',false) ?></li>
-	<li class="next"><?php next_post_link('%link','&lt; 次に進む',false) ?></li>
-</ul>
 <?php endif; ?>

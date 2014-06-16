@@ -14,5 +14,3 @@
 <div id="fb-root"></div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="<?php echo BASE_PATH ?>js/common.js"></script>
-</body>
-</html>

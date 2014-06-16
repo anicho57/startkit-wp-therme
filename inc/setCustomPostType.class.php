@@ -11,7 +11,7 @@ class setCustomPostType{
     public $taxonomieSlug  = 'category';
 
     //メニューアイコン
-    public $menuIcon = '\f161'; //@link http://melchoyce.github.io/dashicons/
+    public $menuIcon = 'dashicons-format-video'; //@link http://melchoyce.github.io/dashicons/
 
     //管理メニューへ表示するユーザーID
     public $adminUser  = array('admin');
@@ -29,9 +29,6 @@ class setCustomPostType{
 
         // カスタムタクソノミーを設定
         // $this->custom_taxonomies_ini();
-
-        // メニューアイコンの登録
-        add_action( 'admin_head', array($this,'add_menu_icons_styles' ));
 
     }
 
@@ -56,15 +53,6 @@ class setCustomPostType{
         // カテゴリページへの項目追加
         add_filter('manage_edit-'.$this->postTypeSlug.'_columns', array($this,'manage_posts_columns'));
         add_action('manage_posts_custom_column', array($this,'add_column'), 10, 2);
-    }
-
-    // メニューアイオンのスタイル追加
-    public function add_menu_icons_styles(){
-         echo '<style>
-              #adminmenu #menu-posts-'.$this->postTypeSlug.' div.wp-menu-image:before {
-                   content: "'.$this->menuIcon.'";
-              }
-         </style>';
     }
 
     /* メニューを非表示 */
@@ -142,6 +130,7 @@ class setCustomPostType{
             'capability_type' => $capability_type,
             'hierarchical' => false,
             'menu_position' => $menu_position,
+            'menu_icon' => $this->menuIcon,
             'has_archive' => true,
             'supports' => $supports
         );
