@@ -1,4 +1,4 @@
-<div id="sideArea">
+<div id="content-sub">
 
 <?php
 global $mySetting;
@@ -32,7 +32,7 @@ if (is_home()) : //ホームページの場合?>
 
 <?php endif; ?>
 
-	<aside id="blogMenu">
+	<aside id="blog-menu">
 		<dl class="cate">
 			<dt>カテゴリー</dt>
 			<dd>
@@ -59,8 +59,5 @@ if (is_home()) : //ホームページの場合?>
 		</dl>
 	</aside>
 
-
-
-
 </div>
-<!-- /#rightSide -->
+<!-- /#content-sub -->

@@ -13,9 +13,9 @@
 
 <?php get_header(); ?>
 
-<div id="contents">
+<div id="page-content">
 
-<div id="mainContent">
+<div id="content-main">
 <main role="main">
 
 <?php get_template_part('parts/pankuzu'); ?>
@@ -29,12 +29,10 @@
 
 </main>
 </div>
-<!-- /#mainContent -->
-
-<?php get_sidebar(); ?>
+<!-- /#content-main -->
 
 </div>
-<!-- /#contents -->
+<!-- /#page-content -->
 
 <?php get_footer(); ?>
 

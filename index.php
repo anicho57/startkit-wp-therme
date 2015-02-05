@@ -9,13 +9,13 @@
 <?php get_template_part('parts/headread'); ?>
 
 </head>
-<body id="<?php echo PAGE_ID;?>">
+<body id="page-<?php echo PAGE_ID;?>">
 
 <?php get_header(); ?>
 
-<div id="contents">
+<div id="page-content">
 
-<div id="mainContent">
+<div id="content-main">
 <main role="main">
 
 <?php get_template_part('parts/pankuzu'); ?>
@@ -43,12 +43,12 @@
 
 </main>
 </div>
-<!-- /#mainContent -->
+<!-- /#content-main -->
 
 <?php get_sidebar(); ?>
 
 </div>
-<!-- /#contents -->
+<!-- /#page-content -->
 
 <?php get_footer(); ?>
 

@@ -9,13 +9,15 @@
 <?php get_template_part('parts/headread'); ?>
 
 </head>
-<body id="<?php echo PAGE_ID;?>">
+<body id="page-<?php echo PAGE_ID;?>">
 
 <?php get_header(); ?>
 
-<div id="eyeCatch" style="background-image:url(../images/home/eyeCatchBg<?php echo sprintf("%02d", rand(1,3)) ?>.png)"></div>
+<div id="eyecatch" style="background-image:url(../images/home/eyeCatchBg<?php echo sprintf("%02d", rand(1,3)) ?>.png)"></div>
 
-<div id="mainContent">
+<div id="page-content">
+
+<div id="content-main">
 <main role="main">
 
 <?php if (have_posts()) : ?>
@@ -63,7 +65,12 @@ if ($myposts) : ?>
 
 </main>
 </div>
-<!-- /#mainContent -->
+<!-- /#content-main -->
+
+<?php get_sidebar(); ?>
+
+</div>
+<!-- /#page-content -->
 
 <?php get_footer(); ?>
 

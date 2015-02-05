@@ -53,6 +53,10 @@ class setCustomPostType{
         // カテゴリページへの項目追加
         add_filter('manage_edit-'.$this->postTypeSlug.'_columns', array($this,'manage_posts_columns'));
         add_action('manage_posts_custom_column', array($this,'add_column'), 10, 2);
+        // カテゴリページの絞り込み追加
+        add_action( 'restrict_manage_posts', array($this,'todo_restrict_manage_posts') );
+        add_filter('parse_query',array($this,'todo_convert_restrict'));
+
     }
 
     /* メニューを非表示 */
@@ -154,6 +158,43 @@ class setCustomPostType{
             )
         );
     }
+    public function todo_restrict_manage_posts() {
+        global $typenow;
+        $args = array( 'public' => true, '_builtin' => false );
+        $post_types = get_post_types($args);
+        if ( in_array($typenow, $post_types) ) {
+        $filters = get_object_taxonomies($typenow);
+            foreach ($filters as $tax_slug) {
+                $tax_obj = get_taxonomy($tax_slug);
+                wp_dropdown_categories(array(
+                    'show_option_all' => $tax_obj->label.'指定なし',
+                    'taxonomy' => $tax_slug,
+                    'name' => $tax_obj->name,
+                    'orderby' => 'term_order',
+                    'selected' => $_GET[$tax_obj->query_var],
+                    'hierarchical' => $tax_obj->hierarchical,
+                    'show_count' => false,
+                    'hide_empty' => true
+                ));
+            }
+        }
+    }
+    public function todo_convert_restrict($query) {
+        global $pagenow;
+        global $typenow;
+        if ($pagenow=='edit.php') {
+            $filters = get_object_taxonomies($typenow);
+            foreach ($filters as $tax_slug) {
+            $var = &$query->query_vars[$tax_slug];
+            if ( isset($var) && $var>0)  {
+                $term = get_term_by('id',$var,$tax_slug);
+                $var = $term->slug;
+            }
+            }
+        }
+        return $query;
+    }
+
 
     public function custom_post_dashboard($custom_post_type){
         global $wp_post_types;

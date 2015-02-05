@@ -9,13 +9,13 @@
 <?php get_template_part('parts/headread'); ?>
 
 </head>
-<body id="<?php echo PAGE_ID;?>">
+<body id="page-<?php echo PAGE_ID;?>">
 
 <?php get_header(); ?>
 
-<div id="contents">
+<div id="page-content">
 
-<div id="mainContent">
+<div id="content-main">
 <main role="main">
 
 <?php get_template_part('parts/pankuzu'); ?>
@@ -23,7 +23,7 @@
 		<h2 class="tit01">「<?php printf('%1$s', wp_specialchars($s, 1) ); ?>」の検索結果</h2>
 	<?php if (have_posts()) : ?>
 
-		<ul id="sLists">
+		<ul id="search-lists">
 		<?php while (have_posts()) : the_post(); ?>
 			<li><a href="<?php the_permalink() ?>" title="<?php the_title_attribute() ?>" rel="bookmark"><?php the_title() ?></a></li>
 		<?php endwhile; ?>
@@ -37,12 +37,12 @@
 
 </main>
 </div>
-<!-- /#mainContent -->
+<!-- /#content-main -->
 
 <?php get_sidebar(); ?>
 
 </div>
-<!-- /#contents -->
+<!-- /#page-content -->
 
 <?php get_footer(); ?>
 

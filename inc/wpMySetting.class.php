@@ -20,6 +20,10 @@ class wpMySetting{
 
         // エディタスタイルシートの追加 (themesdir/)editor-style.css
         add_editor_style();
+
+        // アーカイブの年月日を追加
+        add_filter( 'wp_title', array($this,'jp_date_archive_wp_title'), 10 );
+        add_filter( 'get_archives_link', array($this,'year_archives_link'), 10);
     }
 
     function remove_head(){
@@ -54,6 +58,28 @@ class wpMySetting{
         remove_filter('the_excerpt',  'wpautop');
     }
 
+    function jp_date_archive_wp_title( $title ) {
+        if ( is_date() ) {
+            // $title = trim( $title );
+            $replaces = array(
+                '/([1-9]{1}[0-9]{3})/' => '$1年',
+                '/ ([0-9]{1,2}) /'     => ' $1日 ',
+                '/ ([0-9]{1,2})$/'     => ' $1日',
+                '/[\s]+/'              => ' '
+            );
+            $title = preg_replace( array_keys( $replaces ), $replaces, $title );
+        }
+        return $title;
+    }
+    function year_archives_link($html){
+        if(preg_match('/[0-9]+?<\/a>/', $html))
+            $html = preg_replace('/([0-9]+?)<\/a>/', '$1年</a>', $html);
+        if(preg_match('/title=[\'\"][0-9]+?[\'\"]/', $html))
+            $html = preg_replace('/(title=[\'\"][0-9]+?)([\'\"])/', '$1年$2', $html);
+        return $html;
+    }
+
+
     // 固定ページのビジュアルエディターを無効
     function desable_visual_editor_in_page_ex(){
         add_action( 'load-post.php', array($this,'disable_visual_editor_in_page' ));
@@ -73,7 +99,7 @@ class wpMySetting{
 
     // アイキャッチ機能の有効化
     function use_eyecatch(){
-        add_theme_support('post-thumbnails', array( 'post','page' ));
+        add_theme_support('post-thumbnails', array( 'report' ));
         set_post_thumbnail_size( 900, 9999, true );// サムネイルのサイズ
     }
 
@@ -107,9 +133,10 @@ class wpMySetting{
     // Codex @link https://codex.wordpress.org/TinyMCE
     function custom_editor_settings( $initArray ){
         //tinymce v4
-        $initArray['toolbar1'] = 'bold,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,spellchecker,fullscreen,wp_adv';
-        $initArray['toolbar2'] = 'underline,forecolor,|,pastetext,pasteword,removeformat,|,media,|,outdent,indent,|,undo,redo,wp_help';
-        // $initArray['block_formats'] = "Paragraph=p; 見出し=h2";
+        $initArray['toolbar1'] = 'formatselect,bold,strikethrough,|,bullist,numlist,|,alignleft,aligncenter,alignright,|,link,unlink,|,table,spellchecker,fullscreen,wp_adv';
+        $initArray['toolbar2'] = ',fontsizeselect,underline,forecolor,|,pastetext,pasteword,removeformat,|,media,|,outdent,indent,|,undo,redo,wp_help';
+        $initArray['block_formats'] = "段落=p; 見出し=h3";
+        $initArray['fontsize_formats'] = "10px 11px 12px 13px 14px 16px 20px 24px 28px 32px 36px";
         //tinymce v3
         $initArray['theme_advanced_buttons1'] = 'bold,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,spellchecker,fullscreen,wp_adv';
         $initArray['theme_advanced_buttons2'] = 'underline,forecolor,|,pastetext,pasteword,removeformat,|,media,|,outdent,indent,|,undo,redo,wp_help';
@@ -123,11 +150,12 @@ class wpMySetting{
     function remove_admin_menus () {
         global $menu;
         $user = wp_get_current_user();
-        if($user->data->user_login == 'staff'){
+        if($user->roles != 'administrator'){
             $removeMenu = array(
-                    '固定ページ',
-                    'コメント',
-                    'ツール',
+                    // '固定ページ',
+                    // 'コメント',
+                    // 'ツール',
+                    'Smart Custom Fields',
                 );
             end ($menu);
             foreach ($menu as $key => $value) {
@@ -141,6 +169,36 @@ class wpMySetting{
         add_action( 'admin_menu', array($this,'remove_admin_menus' ));
     }
 
+    // ユーザー権限の変更
+    // @link http://wpdocs.sourceforge.jp/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%81%AE%E7%A8%AE%E9%A1%9E%E3%81%A8%E6%A8%A9%E9%99%90
+    function edit_theme_caps(){
+        $role = get_role( 'editor' );
+        // *** 追加 ***
+        // $role->add_cap( 'upload_files' );
+
+        // *** 削除 ***
+        $remove_caps = array(
+            // 固定ページ関連
+            'delete_others_pages',
+            'delete_pages',
+            'delete_private_pages',
+            'delete_published_pages',
+            'edit_others_pages',
+            'edit_pages',
+            'edit_private_pages',
+            'edit_published_pages',
+            'publish_pages',
+            'read_private_pages',
+
+            'moderate_comments',
+            'manage_links',
+        );
+        $role->remove_cap( $remove_caps );
+    }
+
+    function edit_theme_caps_ex(){
+        add_action( 'admin_init', array($this, 'edit_theme_caps') );
+    }
 
     //指定文字数で切る
     public static function truncate($str, $limit = 80, $etc = '...') {
@@ -194,8 +252,12 @@ class wpMySetting{
             $keys = array_keys($attachments);
             $num=$keys[$order];
             $img = wp_get_attachment_image($num,$size);
+            if(empty($img)){ //Defines a default image
+                $img = '<img src="'.$this->get_base_path().'images/no_image.png" alt="" />';
+            }
             return $img;
         }
+
     }
     function the_post_image($postid,$size="thumbnail",$order=0) {
         echo $this->get_post_image($postid,$size,$order);
@@ -214,7 +276,7 @@ class wpMySetting{
         $first_img = $matches [1] [0];
 
         if(empty($first_img)){ //Defines a default image
-            $first_img = $this->get_base_path()."images/noImage.png";
+            $first_img = $this->get_base_path()."images/no_image.png";
         }
         return $first_img;
     }

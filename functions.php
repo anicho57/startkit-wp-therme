@@ -35,3 +35,6 @@ $mySetting->change_excerpt_mblength_ex();
 
 // 指定管理メニューの削除
 // $mySetting->remove_admin_menus_ex();
+
+// ユーザー権限の変更
+// $mySetting->edit_theme_caps_ex();

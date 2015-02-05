@@ -1,13 +1,13 @@
 
-<div id="footer">
+<div id="page-foot">
 <footer role="contentinfo">
 
-	<div id="pageTop"><a href="#header">↑先頭へ</a></div>
+	<div id="pageTop"><a href="#page-head">↑先頭へ</a></div>
 	<div id="copyright"><small class="wrap">Copyright &copy; 2003<script>t=new Date();document.write(' - '+t.getFullYear());</script> authorName.</small></div>
 
 </footer>
 </div>
-<!-- /#footer -->
+<!-- /#page-foot -->
 <?php wp_footer();?>
 </div>
 <!-- /#page -->
