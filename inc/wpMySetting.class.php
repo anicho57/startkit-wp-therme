@@ -16,7 +16,7 @@ class wpMySetting{
 
         // カスタムフィールドのcss/js追加
         add_action('wp_head',array($this,'add_stylesheet'));
-        add_action('wp_head',array($this,'add_javascript'));
+        add_action('wp_footer',array($this,'add_javascript'));
 
         // エディタスタイルシートの追加 (themesdir/)editor-style.css
         add_editor_style();
@@ -211,6 +211,20 @@ class wpMySetting{
         }
     }
 
+    function change_category_posts_per_page($query) {
+        if ( is_admin() || ! $query->is_main_query() )
+            return;
+
+        if($query->is_category()){
+            $query->set( 'posts_per_page', '10' );//件数変更
+            $query->set( 'orderby', 'post_date' );//ソート指定
+            $query->set( 'order', 'DESC' );//ソート順番
+        }
+    }
+    function change_category_posts_per_page_ex(){
+        add_action( 'pre_get_posts', array($this,'change_category_posts_per_page' ));
+    }
+
     // wp_list_categoriesのFilter
     function list_categories_ancher_in_ex(){
         add_filter( 'wp_list_categories', array($this,'list_categories_ancher_in'), 10, 2 );
@@ -221,17 +235,23 @@ class wpMySetting{
     }
 
     /**
-     * 記事内のサムネイル画像を返す。
+     * 記事内のサムネイル画像を取得。
      * 記事に画像の登録がない場合はコンテンツ内から検索して取得する。
-     * それでもない場合はダミー画像を表示(images/noImage.png)
+     * それでもない場合はダミー画像を表示(images/no_image.png)
      * @return img要素
      */
     function get_post_thumb_image(){
         global $post, $posts;
-        $image = $this->get_post_image($post->ID,"thumbnail");
-        if(!$image){
+        // $image = $this->get_post_attachment_image($post->ID);
+        $image = '';
+        if(empty($image)){
             $image_url = $this->get_content_image_url();
-            $image = '<img src="'.$image_url.'" width="'.get_option('thumbnail_size_w').'" alt="" />';
+            $image_id = $this->get_url_to_attachment_id($image_url);
+            if ($image_id){
+                $image = '<img src="'.$this->get_attachment_image($image_id).'" alt="" />';
+            }else{
+                $image = '<img src="'.$image_url.'" width="'.get_option('thumbnail_size_w').'" alt="" />';
+            }
         }
         return $image;
     }
@@ -246,40 +266,59 @@ class wpMySetting{
      *  $size 取得したい画像のサイズ（thumbnail, medium, large, full ）
      *  $order　ギャラリーでの順序で入れてる数字。2にしたら2番目の画像
      * */
-    function get_post_image($postid,$size="thumbnail",$order=0) {
+    function get_post_attachment_image($postid,$size="thumbnail",$order=0) {
         $attachments = get_children(array('post_parent' => $postid, 'post_type' => 'attachment', 'post_mime_type' => 'image'));
+        // var_dump($attachments);
         if ( is_array($attachments) ){
             $keys = array_keys($attachments);
-            $num=$keys[$order];
-            $img = wp_get_attachment_image($num,$size);
-            if(empty($img)){ //Defines a default image
-                $img = '<img src="'.$this->get_base_path().'images/no_image.png" alt="" />';
+            if(!empty($keys[$order])){
+                $num = $keys[$order];
+                $img = wp_get_attachment_image($num,$size);
+                return $img;
             }
-            return $img;
         }
-
-    }
-    function the_post_image($postid,$size="thumbnail",$order=0) {
-        echo $this->get_post_image($postid,$size,$order);
     }
 
     /**
      * contents内を検索して画像を取得
-     * ない場合はダミー画像を返す(images/noImage.png)
+     * ない場合はダミー画像を返す(images/no_image.png)
      */
     function get_content_image_url() {
         global $post, $posts;
         $first_img = '';
         ob_start();
         ob_end_clean();
-        $output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
-        $first_img = $matches [1] [0];
-
-        if(empty($first_img)){ //Defines a default image
+        if (preg_match_all("/<img[^>]+src=[\"']([\-_\.!~\*'()a-z0-9;\/\?:@&=\+\$,%#]+\.(jpg|jpeg|png|gif))[\"'][^>]+>/i", $post->post_content, $matches) ){
+            $first_img = $matches [1] [0];
+        }else{
             $first_img = $this->get_base_path()."images/no_image.png";
         }
         return $first_img;
     }
+
+    /**
+    * 画像のURLからattachemnt_idを取得する
+    *
+    * @param string $url 画像のURL
+    * @return int attachment_id
+    */
+    function get_url_to_attachment_id($url)
+    {
+        global $wpdb;
+        $sql = "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s";
+        preg_match('/([^\/]+?)(-e\d+)?(-\d+x\d+)?(\.\w+)?$/', $url, $matches);
+        $post_name = $matches[1];
+        return (int)$wpdb->get_var($wpdb->prepare($sql, $post_name));
+    }
+
+    function the_attachment_image($attachment_id,$size = 'thumbnail'){
+        echo '<img src="'.$this->get_attachment_image($attachment_id,$size).'" alt="" />';
+    }
+    function get_attachment_image($attachment_id,$size = 'thumbnail'){
+        $img_src = wp_get_attachment_image_src($attachment_id,$size);
+        return $img_src[0];
+    }
+
 
     /**
      * ファイルサイズ取得

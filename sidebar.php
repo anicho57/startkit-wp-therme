@@ -37,7 +37,9 @@ if (is_home()) : //ホームページの場合?>
 			<dt>カテゴリー</dt>
 			<dd>
 				<ul>
-					<?php wp_list_cats('optioncount=1'); ?>
+					<?php wp_list_categories(array(
+						'show_count' => 1,
+					)); ?>
 				</ul>
 			</dd>
 		</dl>
