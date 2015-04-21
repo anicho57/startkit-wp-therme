@@ -1,6 +1,6 @@
 <?php
-// require( get_template_directory() . '/inc/setCustomPostType.class.php' );
-require( get_template_directory() . '/inc/wpMySetting.class.php' );
+// require( get_template_directory() . '/inc/set-custom-post-type.class.php' );
+require( get_template_directory() . '/inc/wp-my-setting.class.php' );
 
 //ドキュメントルートのパスの設定
 define('BASE_PATH',$mySetting->get_base_path());

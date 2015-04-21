@@ -1,5 +1,5 @@
 <?php
-class wpMySetting{
+class WP_My_Setting{
 
     public $except_len = 50;
 
@@ -20,6 +20,9 @@ class wpMySetting{
 
         // エディタスタイルシートの追加 (themesdir/)editor-style.css
         add_editor_style();
+
+        // メディアライブラリ（一覧）へURL列を追加
+        $this->media_list_add_url_columns();
 
         // アーカイブの年月日を追加
         add_filter( 'wp_title', array($this,'jp_date_archive_wp_title'), 10 );
@@ -208,6 +211,26 @@ class wpMySetting{
             return mb_substr($str, 0, $limit).$etc;
         } else {
             return $str;
+        }
+    }
+
+
+    // メディアライブラリ一覧（リスト時）にファイルのURLを表示する列を追加
+    function media_list_add_url_columns(){
+        add_filter('manage_media_columns', array($this,'posts_columns_attachment_id'), 1);
+        add_action('manage_media_custom_column', array($this,'posts_custom_columns_attachment_id'), 1, 2);
+    }
+    function posts_columns_attachment_id($defaults){
+        $defaults['wps_post_attachments_id'] = 'ファイルのURL';
+        return $defaults;
+    }
+    function posts_custom_columns_attachment_id($column_name, $id){
+        if($column_name === 'wps_post_attachments_id'){
+
+            echo '<textarea readonly style="width:100%;" rows="2" onClick="this.select();">';
+            // get attachment url
+            echo wp_get_attachment_url( $id );
+            echo '</textarea>';
         }
     }
 
@@ -402,4 +425,4 @@ class wpMySetting{
         }
     }
 }
-$mySetting = new wpMySetting;
+$mySetting = new WP_My_Setting;
