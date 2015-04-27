@@ -6,7 +6,7 @@
 
 	<title><?php wp_title('| ', 1, 'right'); ?><?php bloginfo('name'); ?></title>
 
-<?php get_template_part('parts/headread'); ?>
+<?php get_template_part('parts/head-read'); ?>
 
 </head>
 <body id="page-<?php echo PAGE_ID;?>">
