@@ -8,6 +8,8 @@ class WP_My_Setting{
      */
     public function __construct(){
 
+        date_default_timezone_set('Asia/Tokyo');
+
         // 不要なhead出力削除
         $this->remove_head();
 
@@ -27,6 +29,9 @@ class WP_My_Setting{
         // アーカイブの年月日を追加
         add_filter( 'wp_title', array($this,'jp_date_archive_wp_title'), 10 );
         add_filter( 'get_archives_link', array($this,'year_archives_link'), 10);
+
+        // 管理画面にCSSを追加
+        add_action('admin_head', array($this,'wp_custom_admin_css'), 100);
     }
 
     function remove_head(){
@@ -42,6 +47,10 @@ class WP_My_Setting{
         remove_action( 'wp_head', 'recent_comments_style');
         remove_action( 'wp_head', 'wp_shortlink_wp_head');
         return false;
+    }
+
+    function wp_custom_admin_css() {
+        echo "\n" . '<link rel="stylesheet" href="' .get_bloginfo('template_directory'). '/admin.css' . '" />' . "\n";
     }
 
     function disable_update_notice(){
