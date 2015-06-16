@@ -13,6 +13,9 @@ class WP_My_Setting{
         // 不要なhead出力削除
         $this->remove_head();
 
+        // ダッシュボードウィジェット非表示
+        add_action('wp_dashboard_setup', array($this,'remove_dashboard_widgets') );
+
         // moreの...を変更
         add_filter('excerpt_more', array($this,'change_excerpt_more'));
 
@@ -20,11 +23,14 @@ class WP_My_Setting{
         add_action('wp_head',array($this,'add_stylesheet'));
         add_action('wp_footer',array($this,'add_javascript'));
 
-        // エディタスタイルシートの追加 (themesdir/)editor-style.css
-        add_editor_style();
+        // エディタスタイルシートの追加 (themesdir/)editor-style-(posttype).css
+        add_action( 'admin_head', array($this,'my_editor_style'));
 
         // メディアライブラリ（一覧）へURL列を追加
         $this->media_list_add_url_columns();
+
+        // メディアライブラリにPDF絞り込みを追加
+        add_filter( 'post_mime_types', array($this,'modify_post_mime_types'));
 
         // アーカイブの年月日を追加
         add_filter( 'wp_title', array($this,'jp_date_archive_wp_title'), 10 );
@@ -46,6 +52,8 @@ class WP_My_Setting{
         remove_action( 'wp_head', 'wp_generator' );
         remove_action( 'wp_head', 'recent_comments_style');
         remove_action( 'wp_head', 'wp_shortlink_wp_head');
+        remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+        remove_action( 'wp_print_styles', 'print_emoji_styles', 10 );
         return false;
     }
 
@@ -57,6 +65,16 @@ class WP_My_Setting{
 
         // Disable All WordPress Updates プラグインを流用
         require( get_template_directory() . '/inc/disable-updates.php' );
+    }
+
+    function remove_dashboard_widgets() {
+        if (!current_user_can('level_10')) { //level10以下のユーザーの場合ウィジェットをunsetする
+            global $wp_meta_boxes;
+            // unset($wp_meta_boxes['dashboard']['normal']['core']['dashboard_right_now']); // 概要
+            // unset($wp_meta_boxes['dashboard']['normal']['core']['dashboard_activity']); // アクティビティ
+            unset($wp_meta_boxes['dashboard']['side']['core']['dashboard_quick_press']); // クイック投稿
+            unset($wp_meta_boxes['dashboard']['side']['core']['dashboard_primary']); // WordPressニュース
+        }
     }
 
     function change_excerpt_more($more) {
@@ -158,6 +176,15 @@ class WP_My_Setting{
         add_filter( 'tiny_mce_before_init', array($this,'custom_editor_settings' ));
     }
 
+
+    function my_editor_style() {
+        global $current_screen;
+        $post_type = $current_screen->post_type;
+        // add_editor_style('editor-style-'.$post_type.'.css');
+        add_editor_style('editor-style-'.$post_type.'.css');
+    }
+
+
     // 指定管理メニューの削除
     function remove_admin_menus () {
         global $menu;
@@ -242,6 +269,12 @@ class WP_My_Setting{
             echo '</textarea>';
         }
     }
+
+    function modify_post_mime_types( $post_mime_types ) {
+        $post_mime_types['application/pdf'] = array( __( 'PDF' ), __( 'Manage PDFs' ), _n_noop( 'PDF <span class="count">(%s)</span>', 'PDF <span class="count">(%s)</span>' ) );
+        return $post_mime_types;
+    }
+
 
     function change_category_posts_per_page($query) {
         if ( is_admin() || ! $query->is_main_query() )
@@ -426,12 +459,11 @@ class WP_My_Setting{
 
     function get_page_id(){
         $path = $this->get_path();
-        $pid = reset(explode('/', $path));
-        if( $pid == "" ){
-          return "home";
-        }else{
-          return $pid;
+        $first_dir = 'home';
+        if( preg_match('/[^\/]+/', $path, $m)){
+          $first_dir = $m[0];
         }
+        return $first_dir;
     }
 }
-$mySetting = new WP_My_Setting;
+$mySetting = new WP_My_Setting();
