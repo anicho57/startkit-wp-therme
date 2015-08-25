@@ -1,3 +1,3 @@
-<p id ="breadCrumbs" ><a href= "/">HOME</a> &gt; <?php
+<p id ="breadcrumbs" ><?php
 	if(function_exists('bcn_display')) bcn_display();
 ?></p >

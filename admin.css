@@ -6,10 +6,16 @@
 	bottom: 8px;
 	left: 8px;
 	right: 8px;
+	padding: 2px 4px;
 	background: rgba(255,255,255,.9);
 	border: 1px solid #ccc;
 	word-wrap: break-word;
 	overflow: hidden;
+	text-align: left;
+}
+.media-modal-content .attachments-browser .attachments .attachment:after{
+	bottom: auto;
+	top: 8px;
 }
 .attachments-browser .attachments .attachment .filename{
 	display: none;

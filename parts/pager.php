@@ -1,5 +1,5 @@
 <?php if(is_single()): ?>
-<ul class="singlePager">
+<ul class="single-pager">
 	<li class="prev"><?php previous_post_link('%link','前に進む &gt;',false) ?></li>
 	<li class="next"><?php next_post_link('%link','&lt; 次に進む',false) ?></li>
 </ul>

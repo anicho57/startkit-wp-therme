@@ -19,6 +19,9 @@ class WP_My_Setting{
         // moreの...を変更
         add_filter('excerpt_more', array($this,'change_excerpt_more'));
 
+        // authorページを無効
+        add_action('parse_query', array($this,'disable_author_archive'));
+
         // カスタムフィールドのcss/js追加
         add_action('wp_head',array($this,'add_stylesheet'));
         add_action('wp_footer',array($this,'add_javascript'));
@@ -31,6 +34,9 @@ class WP_My_Setting{
 
         // メディアライブラリにPDF絞り込みを追加
         add_filter( 'post_mime_types', array($this,'modify_post_mime_types'));
+
+        // メディア表示をアップロードしたユーザーのみに限定する
+        add_action( 'ajax_query_attachments_args', array($this, 'display_only_self_uploaded_medias' ));
 
         // アーカイブの年月日を追加
         add_filter( 'wp_title', array($this,'jp_date_archive_wp_title'), 10 );
@@ -78,7 +84,7 @@ class WP_My_Setting{
     }
 
     function change_excerpt_more($more) {
-        return '';
+        return '...';
     }
 
     function disable_content_autop(){
@@ -86,6 +92,16 @@ class WP_My_Setting{
     }
     function disable_excerpt_autop(){
         remove_filter('the_excerpt',  'wpautop');
+    }
+
+    function disable_author_archive($q) {
+        if ( $q->is_admin ) {
+            return $q;
+        }elseif ( $q->is_author ) {
+            unset( $_REQUEST['author'] );
+            $q->set( 'author', '' );
+            $q->set_404();
+        }
     }
 
     function jp_date_archive_wp_title( $title ) {
@@ -165,7 +181,7 @@ class WP_My_Setting{
         //tinymce v4
         $initArray['toolbar1'] = 'formatselect,bold,strikethrough,|,bullist,numlist,|,alignleft,aligncenter,alignright,|,link,unlink,|,table,spellchecker,fullscreen,wp_adv';
         $initArray['toolbar2'] = ',fontsizeselect,underline,forecolor,|,pastetext,pasteword,removeformat,|,media,|,outdent,indent,|,undo,redo,wp_help';
-        $initArray['block_formats'] = "段落=p; 見出し=h3";
+        $initArray['block_formats'] = "段落=p; 見出し=h2";
         $initArray['fontsize_formats'] = "10px 11px 12px 13px 14px 16px 20px 24px 28px 32px 36px";
         //tinymce v3
         $initArray['theme_advanced_buttons1'] = 'bold,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,|,link,unlink,|,spellchecker,fullscreen,wp_adv';
@@ -275,6 +291,12 @@ class WP_My_Setting{
         return $post_mime_types;
     }
 
+    function display_only_self_uploaded_medias( $query ) {
+        if ( $user = wp_get_current_user() ) {
+            $query['author'] = $user->ID;
+        }
+        return $query;
+    }
 
     function change_category_posts_per_page($query) {
         if ( is_admin() || ! $query->is_main_query() )
@@ -307,14 +329,18 @@ class WP_My_Setting{
      */
     function get_post_thumb_image(){
         global $post, $posts;
-        // $image = $this->get_post_attachment_image($post->ID);
-        $image = '';
-        if(empty($image)){
+        // 記事に保存されている画像の確認
+        $image = $this->get_post_attachment_image($post->ID);
+        if($image == false){
+            // 記事内から最初のimgタグのsrc部を取得
             $image_url = $this->get_content_image_url();
+            // URLから画像のID番号を取得
             $image_id = $this->get_url_to_attachment_id($image_url);
             if ($image_id){
+                // 画像IDがあればそこからサムネイルサイズの画像URLを取得
                 $image = '<img src="'.$this->get_attachment_image($image_id).'" alt="" />';
             }else{
+                // なければサムネイルサイズの widht を入れる
                 $image = '<img src="'.$image_url.'" width="'.get_option('thumbnail_size_w').'" alt="" />';
             }
         }
@@ -322,6 +348,11 @@ class WP_My_Setting{
     }
     function the_post_thumb_image(){
         echo $this->get_post_thumb_image();
+    }
+
+    function is_post_thumb_image(){
+        $image = $this->get_post_thumb_image();
+        return !preg_match('/no_image/', $image, $m);
     }
 
     /*
@@ -333,17 +364,23 @@ class WP_My_Setting{
      * */
     function get_post_attachment_image($postid,$size="thumbnail",$order=0) {
         $attachments = get_children(array('post_parent' => $postid, 'post_type' => 'attachment', 'post_mime_type' => 'image'));
-        // var_dump($attachments);
         if ( is_array($attachments) ){
-            $keys = array_keys($attachments);
-            if(!empty($keys[$order])){
-                $num = $keys[$order];
-                $img = wp_get_attachment_image($num,$size);
-                return $img;
+            foreach ($attachments as $key => $row) {
+                $mo[$key]  = $row->menu_order;
+                $aid[] = $row->ID;
+            }
+            // array_multisort($mo, SORT_ASC, $aid, SORT_DESC, $attachments , SORT_ASC);
+            $max = empty($max) ? $order + 1 : $max;
+            @array_multisort($aid);
+            for($i=$order;$i<$max;$i++){
+                $img_tag = wp_get_attachment_image( $aid[$i], $size );
+                if ($img_tag != ""){
+                    return $img_tag;
+                }
             }
         }
+        return false;
     }
-
     /**
      * contents内を検索して画像を取得
      * ない場合はダミー画像を返す(images/no_image.png)
@@ -351,8 +388,6 @@ class WP_My_Setting{
     function get_content_image_url() {
         global $post, $posts;
         $first_img = '';
-        ob_start();
-        ob_end_clean();
         if (preg_match_all("/<img[^>]+src=[\"']([\-_\.!~\*'()a-z0-9;\/\?:@&=\+\$,%#]+\.(jpg|jpeg|png|gif))[\"'][^>]+>/i", $post->post_content, $matches) ){
             $first_img = $matches [1] [0];
         }else{

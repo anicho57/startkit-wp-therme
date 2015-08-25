@@ -139,7 +139,7 @@ class setCustomPostType{
             'supports' => $supports
         );
         register_post_type($slug, $args);
-        flush_rewrite_rules(false);
+        // flush_rewrite_rules(false);
 
         // すでにあるタクソノミーを利用する場合
         // register_taxonomy_for_object_type('すでにあるタクソノミースラッグ:categoryなど', $slug);
