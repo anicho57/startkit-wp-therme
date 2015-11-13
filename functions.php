@@ -38,3 +38,5 @@ $mySetting->change_excerpt_mblength_ex();
 
 // ユーザー権限の変更
 // $mySetting->edit_theme_caps_ex();
+// アドミンツールバーメニュー削除
+// $mySetting->remove_toolbar_menus_ex();

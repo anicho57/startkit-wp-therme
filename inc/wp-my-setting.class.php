@@ -44,6 +44,9 @@ class WP_My_Setting{
 
         // 管理画面にCSSを追加
         add_action('admin_head', array($this,'wp_custom_admin_css'), 100);
+
+        // カテゴリー選択後もツリー構造を維持する
+        add_filter( 'wp_terms_checklist_args', array($this,'category_lists_keep_tree') );
     }
 
     function remove_head(){
@@ -92,6 +95,11 @@ class WP_My_Setting{
     }
     function disable_excerpt_autop(){
         remove_filter('the_excerpt',  'wpautop');
+    }
+
+    function category_lists_keep_tree( $args ) {
+        $args['checked_ontop'] = false;
+        return $args;
     }
 
     function disable_author_archive($q) {
@@ -205,7 +213,7 @@ class WP_My_Setting{
     function remove_admin_menus () {
         global $menu;
         $user = wp_get_current_user();
-        if($user->roles != 'administrator'){
+        if($user->roles[0] != 'administrator'){
             $removeMenu = array(
                     // '固定ページ',
                     // 'コメント',
@@ -223,6 +231,45 @@ class WP_My_Setting{
     function remove_admin_menus_ex(){
         add_action( 'admin_menu', array($this,'remove_admin_menus' ));
     }
+
+    // アドミンツールバーのメニュー削除
+    function remove_toolbar_menus ( $wp_admin_bar ) {
+        $wp_admin_bar->remove_node('wp-logo');      //WordPressロゴ
+        // $wp_admin_bar->remove_node('site-name');  //サイト名
+        // $wp_admin_bar->remove_node('updates');  //アップデート通知
+        // $wp_admin_bar->remove_node('comments');   //コメント
+        // $wp_admin_bar->remove_node('new-content');//新規追加
+        // $wp_admin_bar->remove_node('new-media');    // メディア
+        // $wp_admin_bar->remove_node('new-link');     // リンク
+        // $wp_admin_bar->remove_node('new-page');     // 個別ページ
+        // $wp_admin_bar->remove_node('new-user');     // ユーザー
+        // $wp_admin_bar->remove_node('view');       //投稿を表示
+        // $wp_admin_bar->remove_node('my-account'); // 右のプロフィール欄全体
+        // $wp_admin_bar->remove_node('edit-profile');   // プロフィール編集
+        // $wp_admin_bar->remove_node('user-info');      // ユーザー
+        // $wp_admin_bar->remove_node('logout');         //ログアウト
+    }
+    function remove_toolbar_menus_ex () {
+        add_action( 'admin_bar_menu', array($this,'remove_toolbar_menus' ), 999);
+    }
+
+
+    // 管理画面フッターテキスト
+    function custom_admin_footer_text() {
+        $html = '';
+        return $html;
+    }
+    function custom_admin_footer_version(){
+        $string = '';
+        return $string;
+    }
+    function custom_admin_footer_text_ex() {
+        $user = wp_get_current_user();
+        add_filter('admin_footer_text', array($this,'custom_admin_footer_text'));
+        if($user->roles[0] != 'administrator')
+            add_filter('update_footer', array($this, 'custom_admin_footer_version'), 20);
+    }
+
 
     // ユーザー権限の変更
     // @link http://wpdocs.sourceforge.jp/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%81%AE%E7%A8%AE%E9%A1%9E%E3%81%A8%E6%A8%A9%E9%99%90
