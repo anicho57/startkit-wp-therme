@@ -2,6 +2,7 @@
 class WP_My_Setting{
 
     public $except_len = 50;
+    public $post_label = '投稿';
 
     /**
      * コンストラクタ
@@ -311,6 +312,36 @@ class WP_My_Setting{
         } else {
             return $str;
         }
+    }
+
+    function change_post_label_ex(){
+        add_action( 'admin_menu', array($this,'change_post_label') );
+        add_action( 'init', array($this,'change_post_object') );
+    }
+
+    function change_post_label() {
+        global $menu;
+        global $submenu;
+        $menu[5][0] = $this->post_label;
+        $submenu['edit.php'][5][0] = $this->post_label.'一覧';
+        $submenu['edit.php'][10][0] = '新規追加';
+    }
+    function change_post_object() {
+        global $wp_post_types;
+        $labels = &$wp_post_types['post']->labels;
+        $labels->name = $this->post_label;
+        $labels->singular_name = $this->post_label;
+        $labels->add_new = '新規追加';
+        $labels->add_new_item = $this->post_label.'を追加';
+        $labels->edit_item = $this->post_label.'の編集';
+        $labels->new_item = $this->post_label;
+        $labels->view_item = $this->post_label.'の表示';
+        $labels->search_items = $this->post_label.'を検索';
+        $labels->not_found = $this->post_label.'が見つかりませんでした。';
+        $labels->not_found_in_trash = 'ゴミ箱内に'.$this->post_label.'が見つかりませんでした。';
+        $labels->all_items = '全ての'.$this->post_label;
+        $labels->menu_name = $this->post_label;
+        $labels->name_admin_bar = $this->post_label;
     }
 
 

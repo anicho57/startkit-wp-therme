@@ -27,6 +27,10 @@ $mySetting->list_categories_ancher_in_ex();
 $mySetting->except_len = 50;
 $mySetting->change_excerpt_mblength_ex();
 
+// 「投稿」名の変更
+// $mySetting->post_label = '投稿';
+// $mySetting->change_post_label_ex();
+
 //固定ページのビジュアルエディタを無効
 // $mySetting->desable_visual_editor_in_page_ex();
 
@@ -40,3 +44,4 @@ $mySetting->change_excerpt_mblength_ex();
 // $mySetting->edit_theme_caps_ex();
 // アドミンツールバーメニュー削除
 // $mySetting->remove_toolbar_menus_ex();
+
