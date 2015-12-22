@@ -64,6 +64,10 @@ class WP_My_Setting{
         remove_action( 'wp_head', 'wp_shortlink_wp_head');
         remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
         remove_action( 'wp_print_styles', 'print_emoji_styles', 10 );
+        remove_action('template_redirect', 'rest_output_link_header', 11 );
+        remove_action('wp_head','rest_output_link_wp_head');
+        remove_action('wp_head','wp_oembed_add_discovery_links');
+        remove_action('wp_head','wp_oembed_add_host_js');
         return false;
     }
 
@@ -344,6 +348,18 @@ class WP_My_Setting{
         $labels->name_admin_bar = $this->post_label;
     }
 
+    function custom_list_post_columns($columns) {
+        // unset($columns['title']);
+        // unset($columns['author']);
+        // unset($columns['categories']);
+        unset($columns['tags']);
+        unset($columns['comments']);
+        // unset($columns['date']);
+        return $columns;
+    }
+    function custom_list_post_columns_ex() {
+        add_filter( 'manage_posts_columns', array($this,'custom_list_post_columns') );
+    }
 
     // メディアライブラリ一覧（リスト時）にファイルのURLを表示する列を追加
     function media_list_add_url_columns(){

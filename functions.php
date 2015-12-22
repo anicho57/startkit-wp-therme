@@ -40,8 +40,13 @@ $mySetting->change_excerpt_mblength_ex();
 // 指定管理メニューの削除
 // $mySetting->remove_admin_menus_ex();
 
+// 一覧の項目カスタム
+// $mySetting->custom_list_post_columns_ex();
+
 // ユーザー権限の変更
 // $mySetting->edit_theme_caps_ex();
 // アドミンツールバーメニュー削除
 // $mySetting->remove_toolbar_menus_ex();
 
+// フッターテキストの削除
+// $mySetting->custom_admin_footer_text_ex();

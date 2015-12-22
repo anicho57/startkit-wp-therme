@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	<meta charset="utf-8" />
 
 	<title><?php wp_title('| ', 1, 'right'); ?><?php bloginfo('name'); ?></title>
 
 <?php get_template_part('parts/head-read'); ?>
+
+	<link href="favicon.ico" sizes="16x16" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+	<link href="images/common/logo.png" rel="apple-touch-icon-precomposed" />
 
 </head>
 <body id="page-<?php echo PAGE_ID;?>">
