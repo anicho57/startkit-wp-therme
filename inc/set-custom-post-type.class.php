@@ -11,7 +11,7 @@ class setCustomPostType{
     public $taxonomieSlug  = 'category';
 
     //メニューアイコン
-    public $menuIcon = 'dashicons-format-video'; //@link http://melchoyce.github.io/dashicons/
+    public $menuIcon = 'dashicons-format-video'; //@link https://developer.wordpress.org/resource/dashicons/
 
     //管理メニューへ表示するユーザーID
     public $adminUser  = array('admin');

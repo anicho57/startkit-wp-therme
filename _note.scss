@@ -36,7 +36,7 @@
 			@extend %cf;
 			margin: 0 0 24px;
 			padding: 0 0 24px;
-			border-bottom: 1px dashed $lineColor;
+			border-bottom: 1px dashed $color_line;
 			figure{
 				float: left;
 			}
@@ -47,7 +47,7 @@
 				margin: 0 0 12px;
 				font-size: fz(20);
 				a{
-					color: $mainColor;
+					color: $color_main;
 					font-weight: bold;
 				}
 			}
@@ -97,7 +97,7 @@
 								background-color: #333;
 							}
 							&:hover{
-								color: $accentColor;
+								color: $color_accent;
 							}
 						}
 					}
@@ -120,7 +120,7 @@
 		.meta{
 			margin: 30px 0 0;
 			padding: 15px 20px;
-			// border-top: 2px solid $mainColor;
+			// border-top: 2px solid $color_main;
 			background: url(../images/common/bg01.png);
 			color: #333;
 			font-size: fz(11);
@@ -252,15 +252,15 @@
 		line-height: 1.2;
 		a,span{
 			@extend %ib;
-			padding: 5px 10px 4px;
+			padding: .4em .8em .3em;
 			border: 1px solid;
 			border-color: #ccc;
 			background-color: #f9f9f9;
 			color: #333;
 		}
 		span.current{
-			border-color: darken($mainColor, 10%);
-			background-color: $mainColor;
+			border-color: darken($color_main, 10%);
+			background-color: $color_main;
 			color: #fff;
 		}
 	}
@@ -268,13 +268,18 @@
 .single-pager{
 	@if $type == "all"{
 		@extend %cf;
-		margin: 30px 8px 0;
+		margin: 40px 0 0;
 		line-height: 1.2;
 		li{
 			width: 48%;
 			@extend %oneline;
 			a{
+				@extend %ib;
+				padding: .4em .8em .3em;
 				color: #333;
+				border: 1px solid;
+				border-color: #ccc;
+				background-color: #f9f9f9;
 			}
 		}
 		.next{

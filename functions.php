@@ -11,11 +11,31 @@ define('PAGE_ID',$mySetting->get_page_id());
 // $mySetting->disable_content_autop();
 $mySetting->disable_excerpt_autop();
 
+// プラグイン・テーマの自動アップデート
+// add_filter( 'auto_update_plugin', '__return_true' );
+// add_filter( 'auto_update_theme', '__return_true' );
+
 // 更新通知の無効
 // $mySetting->disable_update_notice();
 
 // アイキャッチ機能を使う
 // $mySetting->use_eyecatch();
+
+// カスタムヘッダーの設定
+// add_theme_support( 'custom-header' ,array(
+// 	'default-image'          => '', //デフォルト画像
+// 	'random-default'         => false, //ランダム表示
+// 	'width'                  => 960, //幅
+// 	'height'                 => 300, //高さ
+// 	'flex-height'            => false, //フレキシブル対応（高さ）
+// 	'flex-width'             => false, //フレキシブル対応（幅）
+// 	'default-text-color'     => '', //デフォルトのテキストの色
+// 	'header-text'            => false, //ヘッダー画像上にテキストを表示する
+// 	'uploads'                => true, //ファイルアップロードを許可する
+// 	'wp-head-callback'       => '',
+// 	'admin-head-callback'    => '',
+// 	'admin-preview-callback' => '',
+// ));
 
 // 画像を追加する場合
 // add_image_size('name',70 ,70 ,true);
