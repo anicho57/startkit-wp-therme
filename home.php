@@ -16,6 +16,26 @@
 
 <?php get_header(); ?>
 
+
+<div class="hero">
+	<div class="inner">
+		<ul id="slider">
+<?php
+$headers = get_uploaded_header_images();
+if (count($headers) > 0):
+foreach ( $headers as $header ) :
+?>
+			<li><img src="<?php echo esc_url( $header[url] ); ?>" alt=""></li>';
+<?php endforeach;
+else:?>
+			<li><img src="images/top/img_hero1.jpg" alt="" /></li>
+			<li><img src="images/top/img_hero2.jpg" alt="" /></li>
+			<li><img src="images/top/img_hero3.jpg" alt="" /></li>
+<?php endif; ?>
+		</ul>
+	</div>
+</div>
+
 <div id="eyecatch" style="background-image:url(../images/home/eyeCatchBg<?php echo sprintf("%02d", rand(1,3)) ?>.png)"></div>
 
 <div id="page-content">
