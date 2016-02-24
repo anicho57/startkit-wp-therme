@@ -12,14 +12,14 @@
 	<link href="images/common/logo.png" rel="apple-touch-icon-precomposed" />
 
 </head>
-<body id="page-<?php echo PAGE_ID;?>">
+<body class="page-<?php echo PAGE_ID;?>">
 
 <?php get_header(); ?>
 
 
 <div class="hero">
 	<div class="inner">
-		<ul id="slider">
+		<ul class="slider">
 <?php
 $headers = get_uploaded_header_images();
 if (count($headers) > 0):
@@ -36,17 +36,17 @@ else:?>
 	</div>
 </div>
 
-<div id="eyecatch" style="background-image:url(../images/home/eyeCatchBg<?php echo sprintf("%02d", rand(1,3)) ?>.png)"></div>
+<div class="eyecatch" style="background-image:url(../images/home/eyeCatchBg<?php echo sprintf("%02d", rand(1,3)) ?>.png)"></div>
 
-<div id="page-content">
+<div class="page-content">
 
-<div id="content-main">
+<div class="content-main">
 <main role="main">
 
 <?php if (have_posts()) : ?>
 
 	<?php while (have_posts()) : the_post(); ?>
-		<article id="post-<?php the_ID(); ?>" <?php post_class(); ?> >
+		<article class="post-<?php the_ID(); ?>" <?php post_class(); ?> >
 			<h2 class="entry-title"><a href="<?php the_permalink() ?>" title="<?php the_title_attribute() ?>" rel="bookmark"><?php the_title() ?></a></h2>
 			<?php the_content('&raquo; 続きを読む'); ?>
 			<p class="entry-meta">投稿日：<?php the_time('Y-m-d'); ?> | コメント数：<?php comments_popup_link('0','1','%'); ?> | カテゴリ：<?php the_category(', '); ?> | タグ：<?php the_tags('' , ', ' , ''); ?><?php edit_post_link('| <strong>この記事を編集する</strong>'); ?></p>
@@ -56,7 +56,7 @@ else:?>
 <?php endif; ?>
 
 
-<section id="information">
+<section class="information">
 	<header>
 		<h2 class="tit01">News &amp; Topics</h2>
 		<p class="moreLink"><a href="<?php echo BASE_PATH; ?>news_release/">一覧</a></p>
@@ -88,12 +88,12 @@ if ($myposts) : ?>
 
 </main>
 </div>
-<!-- /#content-main -->
+<!-- /.content-main -->
 
 <?php get_sidebar(); ?>
 
 </div>
-<!-- /#page-content -->
+<!-- /.page-content -->
 
 <?php get_footer(); ?>
 

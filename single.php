@@ -8,19 +8,19 @@
 <?php get_template_part('parts/head-read'); ?>
 
 </head>
-<body id="page-<?php echo PAGE_ID;?>">
+<body class="page-<?php echo PAGE_ID;?>">
 
 <?php get_header(); ?>
 
-<div id="page-content">
+<div class="page-content">
 
-<div id="content-main">
+<div class="content-main">
 <main role="main">
 
 <?php get_template_part('parts/pankuzu'); ?>
 
 <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
-	<article id="post-<?php the_ID(); ?>" <?php post_class(); ?> >
+	<article class="post-<?php the_ID(); ?>" <?php post_class(); ?> >
 		<h2 class="entry-title"><?php the_title() ?></h2>
 		<div class="entry-body">
 			<?php the_content(); ?>
@@ -33,12 +33,12 @@
 
 </main>
 </div>
-<!-- /#content-main -->
+<!-- /.content-main -->
 
 <?php get_sidebar(); ?>
 
 </div>
-<!-- /#page-content -->
+<!-- /.page-content -->
 
 <?php get_footer(); ?>
 

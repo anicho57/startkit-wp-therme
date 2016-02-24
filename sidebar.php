@@ -1,4 +1,4 @@
-<div id="content-sub">
+<div class="content-sub">
 
 <?php
 global $mySetting;
@@ -32,7 +32,7 @@ if (is_home()) : //ホームページの場合?>
 
 <?php endif; ?>
 
-	<aside id="blog-menu">
+	<aside class="blog-menu">
 		<dl class="cate">
 			<dt>カテゴリー</dt>
 			<dd>
@@ -62,4 +62,4 @@ if (is_home()) : //ホームページの場合?>
 	</aside>
 
 </div>
-<!-- /#content-sub -->
+<!-- /.content-sub -->

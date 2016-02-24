@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-#content-main{
+.content-main{
 	@if $type == "all"{
 		float: right;
 		width: 700px;
@@ -14,7 +14,7 @@
 		margin: 0 auto;
 	}
 }
-#content-sub{
+.content-sub{
 	@if $type == "all"{
 		float: left;
 		width: 220px;
@@ -29,7 +29,7 @@
 	}
 }
 
-#entry-list{
+.entry-list{
 	@if $type == "all"{
 		@extend %cf;
 		article{
@@ -66,7 +66,7 @@
 	}
 }
 
-#blog-menu{
+.blog-menu{
 	@if $type == "all"{
 		dl{
 			margin: 0 0 40px;
@@ -108,7 +108,7 @@
 }
 
 
-#single{
+.single{
 	@if $type == "all"{
 		background-color: #fff;
 		time{

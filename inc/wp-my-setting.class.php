@@ -143,6 +143,7 @@ class WP_My_Setting{
     function desable_visual_editor_in_page_ex(){
         add_action( 'load-post.php', array($this,'disable_visual_editor_in_page' ));
         add_action( 'load-post-new.php', array($this,'disable_visual_editor_in_page' ));
+        add_action( 'wp', array($this,'disable_page_wpautop' ));
     }
     function disable_visual_editor_in_page(){
         global $current_user;
@@ -155,6 +156,10 @@ class WP_My_Setting{
     function disable_visual_editor_filter(){
         return false;
     }
+    function disable_page_wpautop() {
+        if ( is_page() ) remove_filter( 'the_content', 'wpautop' );
+    }
+
 
     // アイキャッチ機能の有効化
     function use_eyecatch(){
