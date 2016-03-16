@@ -1,5 +1,5 @@
 <?php
-class WP_My_Setting{
+class Therme_Setting{
 
     public $except_len = 50;
     public $post_label = '投稿';
@@ -600,4 +600,4 @@ class WP_My_Setting{
         return $first_dir;
     }
 }
-$mySetting = new WP_My_Setting();
+$ThermeSetting = new Therme_Setting();
