@@ -504,10 +504,10 @@ class WP_My_Setting{
     function get_url_to_attachment_id($url)
     {
         global $wpdb;
-        $sql = "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s";
+        $sql = "SELECT ID FROM {$wpdb->posts} WHERE guid LIKE '%%%s%%'";
         preg_match('/([^\/]+?)(-e\d+)?(-\d+x\d+)?(\.\w+)?$/', $url, $matches);
-        $post_name = $matches[1];
-        return (int)$wpdb->get_var($wpdb->prepare($sql, $post_name));
+        $file_name = $matches[1];
+        return (int)$wpdb->get_var($wpdb->prepare($sql, $file_name));
     }
 
     function the_attachment_image($attachment_id,$size = 'thumbnail'){
@@ -593,7 +593,7 @@ class WP_My_Setting{
 
     function get_page_id(){
         $path = $this->get_path();
-        $first_dir = 'home';
+        $first_dir = 'top';
         if( preg_match('/[^\/]+/', $path, $m)){
           $first_dir = $m[0];
         }

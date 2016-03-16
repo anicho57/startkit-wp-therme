@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-	<meta charset="utf-8" />
+<?php get_template_part('parts/head-first'); ?>
 
 	<title><?php wp_title('| ', 1, 'right'); ?><?php bloginfo('name'); ?></title>
 
