@@ -600,4 +600,4 @@ class Therme_Setting{
         return $first_dir;
     }
 }
-$ThermeSetting = new Therme_Setting();
+$thermeSetting = new Therme_Setting();

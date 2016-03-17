@@ -21,7 +21,7 @@
 
 <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 	<article>
-		<figure><a href="<?php the_permalink() ?>" ><?php $ThermeSetting->the_post_thumb_image() ?></a></figure>
+		<figure><a href="<?php the_permalink() ?>" ><?php $thermeSetting->the_post_thumb_image() ?></a></figure>
 		<div class="body">
 			<h2><a href="<?php the_permalink() ?>" ><?php the_title() ?></a></h2>
 			<p class="except">

@@ -3,23 +3,23 @@
 require( get_template_directory() . '/inc/wp-my-setting.class.php' );
 
 //ドキュメントルートのパスの設定
-define('BASE_PATH',$ThermeSetting->get_base_path());
+define('BASE_PATH',$thermeSetting->get_base_path());
 // page id
-define('PAGE_ID',$ThermeSetting->get_page_id());
+define('PAGE_ID',$thermeSetting->get_page_id());
 
 // 自動pタグ付加を無効
-// $ThermeSetting->disable_content_autop();
-$ThermeSetting->disable_excerpt_autop();
+// $thermeSetting->disable_content_autop();
+$thermeSetting->disable_excerpt_autop();
 
 // プラグイン・テーマの自動アップデート
 // add_filter( 'auto_update_plugin', '__return_true' );
 // add_filter( 'auto_update_theme', '__return_true' );
 
 // 更新通知の無効
-// $ThermeSetting->disable_update_notice();
+// $thermeSetting->disable_update_notice();
 
 // アイキャッチ機能を使う
-// $ThermeSetting->use_eyecatch();
+// $thermeSetting->use_eyecatch();
 
 // カスタムヘッダーの設定
 // add_theme_support( 'custom-header' ,array(
@@ -41,32 +41,32 @@ $ThermeSetting->disable_excerpt_autop();
 // add_image_size('name',70 ,70 ,true);
 
 // wp_list_categoriesの記事数をアンカー内に入れる
-$ThermeSetting->list_categories_ancher_in_ex();
+$thermeSetting->list_categories_ancher_in_ex();
 
 // 抜粋文字数変更
-$ThermeSetting->except_len = 50;
-$ThermeSetting->change_excerpt_mblength_ex();
+$thermeSetting->except_len = 50;
+$thermeSetting->change_excerpt_mblength_ex();
 
 // 「投稿」名の変更
-// $ThermeSetting->post_label = '投稿';
-// $ThermeSetting->change_post_label_ex();
+// $thermeSetting->post_label = '投稿';
+// $thermeSetting->change_post_label_ex();
 
 //固定ページのビジュアルエディタを無効
-// $ThermeSetting->desable_visual_editor_in_page_ex();
+// $thermeSetting->desable_visual_editor_in_page_ex();
 
 // tinymceのメニューカスタマイズ
-// $ThermeSetting->custom_editor_settings_ex();
+// $thermeSetting->custom_editor_settings_ex();
 
 // 指定管理メニューの削除
-// $ThermeSetting->remove_admin_menus_ex();
+// $thermeSetting->remove_admin_menus_ex();
 
 // 一覧の項目カスタム
-// $ThermeSetting->custom_list_post_columns_ex();
+// $thermeSetting->custom_list_post_columns_ex();
 
 // ユーザー権限の変更
-// $ThermeSetting->edit_theme_caps_ex();
+// $thermeSetting->edit_theme_caps_ex();
 // アドミンツールバーメニュー削除
-// $ThermeSetting->remove_toolbar_menus_ex();
+// $thermeSetting->remove_toolbar_menus_ex();
 
 // フッターテキストの削除
-// $ThermeSetting->custom_admin_footer_text_ex();
+// $thermeSetting->custom_admin_footer_text_ex();

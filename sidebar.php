@@ -1,8 +1,8 @@
 <div class="content-sub">
 
 <?php
-global $ThermeSetting;
-$parent_slug = $ThermeSetting->get_page_id();
+global $thermeSetting;
+$parent_slug = $thermeSetting->get_page_id();
 if (is_home()) : //ホームページの場合?>
 
 
