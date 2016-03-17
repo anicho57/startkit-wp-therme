@@ -1,8 +1,8 @@
 <div class="content-sub">
 
 <?php
-global $thermeSetting;
-$parent_slug = $thermeSetting->get_page_id();
+global $themeSetting;
+$parent_slug = $themeSetting->get_page_id();
 if (is_home()) : //ホームページの場合?>
 
 

@@ -1,5 +1,5 @@
 <?php
-class Therme_Setting{
+class Theme_Setting{
 
     public $except_len = 50;
     public $post_label = '投稿';
@@ -600,4 +600,4 @@ class Therme_Setting{
         return $first_dir;
     }
 }
-$thermeSetting = new Therme_Setting();
+$themeSetting = new Theme_Setting();
