@@ -63,8 +63,6 @@ $themeSetting->change_excerpt_mblength_ex();
 // 一覧の項目カスタム
 // $themeSetting->custom_list_post_columns_ex();
 
-// ユーザー権限の変更
-// $themeSetting->edit_theme_caps_ex();
 // アドミンツールバーメニュー削除
 // $themeSetting->remove_toolbar_menus_ex();
 

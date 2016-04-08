@@ -33,6 +33,9 @@ class Theme_Setting{
         // メディアライブラリ（一覧）へURL列を追加
         $this->media_list_add_url_columns();
 
+        // jQueryをGoogle CDNに変更
+        add_action('init', array($this,'load_jquery_google_cdn'));
+
         // メディアライブラリにPDF絞り込みを追加
         add_filter( 'post_mime_types', array($this,'modify_post_mime_types'));
 
@@ -93,6 +96,13 @@ class Theme_Setting{
 
     function change_excerpt_more($more) {
         return '...';
+    }
+
+    function load_jquery_google_cdn() {
+        if ( !is_admin() ) {
+            wp_deregister_script('jquery');
+            wp_enqueue_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js', array(), '1.11.2',true);
+        }
     }
 
     function disable_content_autop(){
@@ -215,7 +225,7 @@ class Theme_Setting{
         global $current_screen;
         $post_type = $current_screen->post_type;
         // add_editor_style('editor-style-'.$post_type.'.css');
-        add_editor_style('editor-style-'.$post_type.'.css');
+        add_editor_style('editor-style.css');
     }
 
 
