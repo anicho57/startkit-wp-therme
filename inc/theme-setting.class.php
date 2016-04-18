@@ -607,7 +607,7 @@ class Theme_Setting{
         if( preg_match('/[^\/]+/', $path, $m)){
           $first_dir = $m[0];
         }
-        return $first_dir;
+        return htmlspecialchars($first_dir);
     }
 }
 $themeSetting = new Theme_Setting();

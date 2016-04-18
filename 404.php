@@ -9,7 +9,7 @@
 <?php get_template_part('parts/head-read'); ?>
 
 </head>
-<body class="<?php echo PAGE_ID;?>">
+<body class="e404">
 
 <?php get_header(); ?>
 
