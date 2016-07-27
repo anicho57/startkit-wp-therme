@@ -30,6 +30,9 @@ class setCustomPostType{
         // カスタムタクソノミーを設定
         // $this->custom_taxonomies_ini();
 
+        // wp rest apiで利用する
+        // $this->add_wp_rest_api();
+
     }
 
     // カスタムの設定
@@ -212,6 +215,18 @@ class setCustomPostType{
         echo '<td class="first b b_' . $custom_post_type . '">' . $num . '</td>';
         echo '<td class="t ' . $custom_post_type . '">' . $text . '</td>';
         echo '</tr>';
+    }
+
+    public function add_wp_rest_api(){
+        add_action( 'init', array($this,'sb_add_cpts_to_api'), 30 );
+
+    }
+
+    public function sb_add_cpts_to_api() {
+        global $wp_post_types;
+
+        $wp_post_types[$this->postTypeSlug]->show_in_rest = true;
+        $wp_post_types[$this->postTypeSlug]->rest_base = $this->postTypeSlug;
     }
 }
 $custompost = new setCustomPostType;
