@@ -51,6 +51,10 @@ class Theme_Setting{
 
         // カテゴリー選択後もツリー構造を維持する
         add_filter( 'wp_terms_checklist_args', array($this,'category_lists_keep_tree') );
+
+        // 404自動リダイレクトを止める
+        add_filter('redirect_canonical', array($this, 'remove_redirect_guess_404_permalink'), 10, 2);
+
     }
 
     function remove_head(){
@@ -72,6 +76,13 @@ class Theme_Setting{
         remove_action('wp_head','wp_oembed_add_discovery_links');
         remove_action('wp_head','wp_oembed_add_host_js');
         return false;
+    }
+
+    function remove_redirect_guess_404_permalink($redirect_url, $requested_url) {
+      if(is_404()) {
+        return false;
+      }
+      return $redirect_url;
     }
 
     function wp_custom_admin_css() {
@@ -233,7 +244,7 @@ class Theme_Setting{
     function remove_admin_menus () {
         global $menu;
         $user = wp_get_current_user();
-        if($user->roles[0] != 'administrator'){
+        if( isset($user->roles[0]) && $user->roles[0] != 'administrator'){
             $removeMenu = array(
                     // '固定ページ',
                     // 'コメント',
@@ -286,7 +297,7 @@ class Theme_Setting{
     function custom_admin_footer_text_ex() {
         $user = wp_get_current_user();
         add_filter('admin_footer_text', array($this,'custom_admin_footer_text'));
-        if($user->roles[0] != 'administrator')
+        if( isset($user->roles[0]) && $user->roles[0] != 'administrator')
             add_filter('update_footer', array($this, 'custom_admin_footer_version'), 20);
     }
 

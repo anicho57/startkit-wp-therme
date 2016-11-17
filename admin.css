@@ -3,6 +3,7 @@
 	content: attr(aria-label);
 	display: block;
 	position: absolute;
+	max-height: 3em;
 	bottom: 8px;
 	left: 8px;
 	right: 8px;
