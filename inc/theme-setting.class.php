@@ -52,6 +52,9 @@ class Theme_Setting{
         // カテゴリー選択後もツリー構造を維持する
         add_filter( 'wp_terms_checklist_args', array($this,'category_lists_keep_tree') );
 
+        // 管理者権限以外はアップデート通知を表示しない
+        add_action( 'admin_init', array($this, 'update_nag_admin_only'));
+
         // 404自動リダイレクトを止める
         add_filter('redirect_canonical', array($this, 'remove_redirect_guess_404_permalink'), 10, 2);
 
@@ -83,6 +86,12 @@ class Theme_Setting{
         return false;
       }
       return $redirect_url;
+    }
+
+    function update_nag_admin_only() {
+        if ( ! current_user_can( 'administrator' ) ) {
+            remove_action( 'admin_notices', 'update_nag', 3 );
+        }
     }
 
     function wp_custom_admin_css() {

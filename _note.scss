@@ -31,9 +31,9 @@
 
 .entry-list{
 	@if $type == "all"{
-		@extend %cf;
+		@include clearfix();
 		article{
-			@extend %cf;
+			@include clearfix();
 			margin: 0 0 24px;
 			padding: 0 0 24px;
 			border-bottom: 1px dashed $color_line;
@@ -140,7 +140,7 @@
 
 .tiny-mce{
 	@if $type == "all"{
-		@extend %cf;
+		@include clearfix();
 		h3{
 			clear: both;
 		}
@@ -251,7 +251,7 @@
 		text-align: center;
 		line-height: 1.2;
 		a,span{
-			@extend %ib;
+			display: inline-block;
 			padding: .4em .8em .3em;
 			border: 1px solid;
 			border-color: #ccc;
@@ -267,14 +267,14 @@
 }
 .single-pager{
 	@if $type == "all"{
-		@extend %cf;
+		@include clearfix();
 		margin: 40px 0 0;
 		line-height: 1.2;
 		li{
 			width: 48%;
 			@extend %oneline;
 			a{
-				@extend %ib;
+				display: inline-block;
 				padding: .4em .8em .3em;
 				color: #333;
 				border: 1px solid;

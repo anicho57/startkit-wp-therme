@@ -3,9 +3,9 @@
 require( get_template_directory() . '/inc/theme-setting.class.php' );
 
 //ドキュメントルートのパスの設定
-define('BASE_PATH',$themeSetting->get_base_path());
+$basePath = $themeSetting->get_base_path();
 // page id
-define('PAGE_ID',$themeSetting->get_page_id());
+$pid = $themeSetting->get_page_id();
 
 // 自動pタグ付加を無効
 // $themeSetting->disable_content_autop();

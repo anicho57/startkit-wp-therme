@@ -38,6 +38,7 @@ if (is_home()) : //ホームページの場合?>
 			<dd>
 				<ul>
 					<?php wp_list_categories(array(
+						'title_li' => '',
 						'show_count' => 1,
 					)); ?>
 				</ul>
@@ -55,6 +56,7 @@ if (is_home()) : //ホームページの場合?>
 			<dt>アーカイブ</dt>
 			<dd>
 				<select name="archive-dropdown" onchange="document.location.href=this.options[this.selectedIndex].value;">
+					<option>選択してください</option>
 					<?php wp_get_archives( array( 'type' => 'monthly', 'format' => 'option', 'show_post_count' => 1 ) ); ?>
 				</select>
 			</dd>
