@@ -3,9 +3,9 @@
 require( get_template_directory() . '/inc/theme-setting.class.php' );
 
 //ドキュメントルートのパスの設定
-$basePath = $themeSetting->get_base_path();
+define('BASE_PATH',$themeSetting->get_base_path());
 // page id
-$pid = $themeSetting->get_page_id();
+define('PAGE_ID',$themeSetting->get_page_id());
 
 // 自動pタグ付加を無効
 // $themeSetting->disable_content_autop();
@@ -59,6 +59,9 @@ $themeSetting->change_excerpt_mblength_ex();
 
 // 指定管理メニューの削除
 // $themeSetting->remove_admin_menus_ex();
+
+// 投稿のタグタクソノミーの削除
+// $themeSetting->remove_tag_taxonomie();
 
 // 一覧の項目カスタム
 // $themeSetting->custom_list_post_columns_ex();

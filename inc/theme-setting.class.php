@@ -58,6 +58,9 @@ class Theme_Setting{
         // 404自動リダイレクトを止める
         add_filter('redirect_canonical', array($this, 'remove_redirect_guess_404_permalink'), 10, 2);
 
+        // 投稿権限のカスタマイズ DB（wp_options、wp_user_roles）に保存される
+        add_action( 'load-themes.php', array($this, 'add_author_caps'));
+
     }
 
     function remove_head(){
@@ -86,6 +89,24 @@ class Theme_Setting{
         return false;
       }
       return $redirect_url;
+    }
+
+    function add_author_caps(){
+       global $pagenow;
+
+       $role = get_role( 'author' );
+       if ( 'themes.php' == $pagenow && isset( $_GET['activated'] ) ){ // Test if theme is activated
+            //テーマがアクティブ
+            $role->add_cap( 'manage_categories' );
+            $role->add_cap( 'edit_others_posts' );
+            $role->add_cap( 'delete_others_posts' );
+       }
+       else {
+            //テーマが無効になったとき
+            $role->remove_cap( 'manage_categories' );
+            $role->remove_cap( 'edit_others_posts' );
+            $role->remove_cap( 'delete_others_posts' );
+        }
     }
 
     function update_nag_admin_only() {
@@ -383,11 +404,30 @@ class Theme_Setting{
         $labels->name_admin_bar = $this->post_label;
     }
 
+    function remove_tag_taxonomie(){
+        // メニュー関連
+        add_action('admin_menu', array($this, 'remove_tag_content'));
+        // 一覧画面から削除
+        add_filter( 'manage_posts_columns', array($this,'remove_list_post_columns_tag') );
+    }
+
+    function remove_tag_content(){
+        // 左メニューから削除
+        remove_submenu_page('edit.php', 'edit-tags.php?taxonomy=post_tag');
+        // 編集画面から削除
+        remove_meta_box('tagsdiv-post_tag','post','side');
+    }
+
+    function remove_list_post_columns_tag($columns){
+        unset($columns['tags']);
+        return $columns;
+    }
+
     function custom_list_post_columns($columns) {
         // unset($columns['title']);
         // unset($columns['author']);
         // unset($columns['categories']);
-        unset($columns['tags']);
+        // unset($columns['tags']);
         unset($columns['comments']);
         // unset($columns['date']);
         return $columns;
