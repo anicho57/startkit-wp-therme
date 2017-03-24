@@ -2,8 +2,6 @@
 // require( get_template_directory() . '/inc/set-custom-post-type.class.php' );
 require( get_template_directory() . '/inc/theme-setting.class.php' );
 
-//ドキュメントルートのパスの設定
-define('BASE_PATH',$themeSetting->get_base_path());
 // page id
 define('PAGE_ID',$themeSetting->get_page_id());
 
@@ -69,5 +67,10 @@ $themeSetting->change_excerpt_mblength_ex();
 // アドミンツールバーメニュー削除
 // $themeSetting->remove_toolbar_menus_ex();
 
+// アドミンバーを消去
+// $themeSetting->hide_admin_bar();
+
 // フッターテキストの削除
 // $themeSetting->custom_admin_footer_text_ex();
+
+

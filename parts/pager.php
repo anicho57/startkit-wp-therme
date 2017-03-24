@@ -1,7 +1,7 @@
 <?php if(is_single()): ?>
 <ul class="single-pager">
-	<li class="prev"><?php previous_post_link('%link','前に進む &gt;',false) ?></li>
-	<li class="next"><?php next_post_link('%link','&lt; 次に進む',false) ?></li>
+	<li class="prev"><?php previous_post_link('%link','古い記事へ &gt;',false) ?></li>
+	<li class="next"><?php next_post_link('%link','&lt; 新しい記事へ',false) ?></li>
 </ul>
 <?php else: ?>
 <div class="pager">
@@ -22,8 +22,8 @@
 		'total' => $wp_query->max_num_pages,
 		'mid_size' => 4,
 		'current' => ($paged ? $paged : 1),
-		'prev_text' => '前に進む',
-		'next_text' => '次に進む',
+		'prev_text' => '古い記事へ',
+		'next_text' => '新しい記事へ',
 	)); ?>
 </div>
 <?php endif; ?>

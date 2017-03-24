@@ -314,6 +314,13 @@ class Theme_Setting{
         add_action( 'admin_bar_menu', array($this,'remove_toolbar_menus' ), 999);
     }
 
+    function hide_admin_bar(){
+        add_filter( 'show_admin_bar' , array($this,'admin_bar_false'));
+    }
+
+    function admin_bar_false(){
+        return false;
+    }
 
     // 管理画面フッターテキスト
     function custom_admin_footer_text() {

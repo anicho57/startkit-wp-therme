@@ -25,7 +25,7 @@
         <strong>お探しのページは一時的にアクセスが出来ない状況にあるか移動もしくは削除された可能性があります。</strong><br />
         大変お手数ですが、下記のリンクよりお探しください。
     </p>
-    <p class="mt20"><a class="btn01" href="/">トップページ</a></p>
+    <p class="mt20"><a class="btn01" href="<?php echo home_url($path = '/', $scheme = relative); ?>">トップページ</a></p>
 
 </main>
 </div>
