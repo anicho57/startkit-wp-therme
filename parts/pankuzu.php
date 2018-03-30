@@ -14,8 +14,14 @@
 		$str.='<li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><span itemprop="title">'. $cat -> name . '</span></li>'."\n";
 	//ブログの個別記事ページ
 	} elseif(is_single()){
-		$categories = get_the_category($post->ID);
-		$cat = $categories[0];
+		$cats = get_the_category();
+		// term_idで並び替え
+		$baff = array();
+		foreach($cats as $key => $value){
+			$baff[$key] = $value->term_id;
+		}
+		array_multisort($baff ,SORT_DESC,$cats);
+		$cat = $cats[0];
 		if($cat -> parent != 0){
 			$ancestors = array_reverse(get_ancestors( $cat -> cat_ID, 'category' ));
 			foreach($ancestors as $ancestor){

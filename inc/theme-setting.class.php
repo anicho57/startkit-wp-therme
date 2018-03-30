@@ -37,7 +37,7 @@ class Theme_Setting{
         add_action('init', array($this,'load_jquery_google_cdn'));
 
         // メディアライブラリにPDF絞り込みを追加
-        add_filter( 'post_mime_types', array($this,'modify_post_mime_types'));
+        // add_filter( 'post_mime_types', array($this,'modify_post_mime_types'));
 
         // メディア表示をアップロードしたユーザーのみに限定する
         add_action( 'ajax_query_attachments_args', array($this, 'display_only_self_uploaded_medias' ));
@@ -276,10 +276,10 @@ class Theme_Setting{
         $user = wp_get_current_user();
         if( isset($user->roles[0]) && $user->roles[0] != 'administrator'){
             $removeMenu = array(
-                    // '固定ページ',
-                    // 'コメント',
-                    // 'ツール',
-                    'Smart Custom Fields',
+                    '固定ページ',
+                    'コメント',
+                    'ツール',
+                    // 'Smart Custom Fields',
                 );
             end ($menu);
             foreach ($menu as $key => $value) {
@@ -506,7 +506,8 @@ class Theme_Setting{
     function get_post_thumb_image(){
         global $post, $posts;
         // 記事に保存されている画像の確認
-        $image = $this->get_post_attachment_image($post->ID);
+        // $image = $this->get_post_attachment_image($post->ID);
+        $image = false;
         if($image == false){
             // 記事内から最初のimgタグのsrc部を取得
             $image_url = $this->get_content_image_url();
@@ -659,7 +660,10 @@ class Theme_Setting{
     }
 
     function get_base_path(){
-        return str_replace("index.php","",$_SERVER['PHP_SELF']);
+        $b_path = str_replace("index.php","",$_SERVER['PHP_SELF']);
+        $b_path = str_replace("index.html","",$b_path);
+        $b_path = str_replace('app/', '', $b_path);
+        return $b_path;
     }
 
     function get_path(){
