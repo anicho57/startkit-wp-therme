@@ -37,10 +37,10 @@ class Theme_Setting{
         add_action('init', array($this,'load_jquery_google_cdn'));
 
         // メディアライブラリにPDF絞り込みを追加
-        // add_filter( 'post_mime_types', array($this,'modify_post_mime_types'));
+        add_filter( 'post_mime_types', array($this,'modify_post_mime_types'));
 
         // メディア表示をアップロードしたユーザーのみに限定する
-        add_action( 'ajax_query_attachments_args', array($this, 'display_only_self_uploaded_medias' ));
+        // add_action( 'ajax_query_attachments_args', array($this, 'display_only_self_uploaded_medias' ));
 
         // アーカイブの年月日を追加
         add_filter( 'wp_title', array($this,'jp_date_archive_wp_title'), 10 );
@@ -497,34 +497,62 @@ class Theme_Setting{
         return $output;
     }
 
+
+    /**
+     * 記事に所属している指定カテゴリIDの子を取得
+     * @param  [type]  $post_id    [description]
+     * @param  integer $parent_cat [description]
+     * @return [type]              [description]
+     */
+    function get_category_parent_child($post_id, $parent_cat = 0){
+        $child_category = false;
+        $cats = get_the_category($post_id);
+        foreach ($cats as $c) {
+            if ( $c->category_parent === $parent_cat ){
+                $child_category = $c;
+                break;
+            }
+        }
+        if ( $child_category === false){
+            $child_category = $this->get_parent_category($cats[0]->category_parent,$parent_cat);
+        }
+        return $child_category;
+    }
+
+    function get_parent_category($cat_id, $parent_cat){
+        $cat = get_category($cat_id);
+        if ( $cat->category_parent === $parent_cat ){
+            $child_category = $cat;
+        }else{
+            $child_category = $this->get_parent_category($cat->category_parent, $parent_cat);
+        }
+        return $child_category;
+    }
+
+
     /**
      * 記事内のサムネイル画像を取得。
      * 記事に画像の登録がない場合はコンテンツ内から検索して取得する。
      * それでもない場合はダミー画像を表示(images/no_image.png)
      * @return img要素
      */
-    function get_post_thumb_image(){
+    function get_post_thumb_image($size = 'thumbnail'){
         global $post, $posts;
-        // 記事に保存されている画像の確認
-        // $image = $this->get_post_attachment_image($post->ID);
-        $image = false;
-        if($image == false){
-            // 記事内から最初のimgタグのsrc部を取得
-            $image_url = $this->get_content_image_url();
-            // URLから画像のID番号を取得
-            $image_id = $this->get_url_to_attachment_id($image_url);
-            if ($image_id){
-                // 画像IDがあればそこからサムネイルサイズの画像URLを取得
-                $image = '<img src="'.$this->get_attachment_image($image_id).'" alt="" />';
-            }else{
-                // なければサムネイルサイズの widht を入れる
-                $image = '<img src="'.$image_url.'" width="'.get_option('thumbnail_size_w').'" alt="" />';
-            }
+        // 記事内から最初のimgタグのsrc部を取得
+        $image_url = $this->get_content_image_url();
+        // URLから画像のID番号を取得
+        $image_id = $this->get_url_to_attachment_id($image_url);
+        if ($image_id){
+            // 画像IDがあればそこからサムネイルサイズの画像URLを取得
+            $image = '<img src="'.$this->get_attachment_image($image_id, $size).'" alt="" />';
+        }else{
+            // なければサムネイルサイズの widht を入れる
+            $image = '<img src="'.$image_url.'" width="'.get_option($size . '_size_w').'" alt="" />';
         }
         return $image;
     }
-    function the_post_thumb_image(){
-        echo $this->get_post_thumb_image();
+    function the_post_thumb_image($size = 'thumbnail'){
+        echo $this->get_post_thumb_image($size);
     }
 
     function is_post_thumb_image(){
@@ -568,7 +596,7 @@ class Theme_Setting{
         if (preg_match_all("/<img[^>]+src=[\"']([\-_\.!~\*'()a-z0-9;\/\?:@&=\+\$,%#]+\.(jpg|jpeg|png|gif))[\"'][^>]+>/i", $post->post_content, $matches) ){
             $first_img = $matches [1] [0];
         }else{
-            $first_img = $this->get_base_path()."images/no_image.png";
+            $first_img = get_template_directory_uri()."/img/no_image.png";
         }
         return $first_img;
     }
@@ -579,19 +607,24 @@ class Theme_Setting{
     * @param string $url 画像のURL
     * @return int attachment_id
     */
-    function get_url_to_attachment_id($url)
-    {
+    function get_url_to_attachment_id($url){
         global $wpdb;
-        $sql = "SELECT ID FROM {$wpdb->posts} WHERE guid LIKE '%%%s%%'";
-        preg_match('/([^\/]+?)(-e\d+)?(-\d+x\d+)?(\.\w+)?$/', $url, $matches);
-        $file_name = $matches[1];
-        return (int)$wpdb->get_var($wpdb->prepare($sql, $file_name));
+        $attachment = false;
+        $image_url = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $url ); // 000x000を除去
+        $attachment = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE guid='%s';", $image_url ));
+        if ( $attachment === null ){
+            preg_match('/([^\/]+?)(-e\d+)?(-\d+x\d+)?(\.\w+)?$/', $image_url, $matches);
+            $file_name = $matches[1];
+            $attachment = (int)$wpdb->get_var($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE guid LIKE '%%%s%%'", $file_name));
+        }
+        return $attachment;
     }
 
     function the_attachment_image($attachment_id,$size = 'thumbnail'){
         echo '<img src="'.$this->get_attachment_image($attachment_id,$size).'" alt="" />';
     }
     function get_attachment_image($attachment_id,$size = 'thumbnail'){
+
         $img_src = wp_get_attachment_image_src($attachment_id,$size);
         return $img_src[0];
     }
