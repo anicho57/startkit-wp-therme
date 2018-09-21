@@ -53,7 +53,7 @@ $themeSetting->change_excerpt_mblength_ex();
 // $themeSetting->desable_visual_editor_in_page_ex();
 
 // tinymceのメニューカスタマイズ
-$themeSetting->custom_editor_settings_ex();
+// $themeSetting->custom_editor_settings_ex();
 
 // 指定管理メニューの削除
 // $themeSetting->remove_admin_menus_ex();
@@ -74,10 +74,3 @@ $themeSetting->custom_editor_settings_ex();
 // $themeSetting->custom_admin_footer_text_ex();
 
 
-// プレビューのリンクの修正
-// function replace_preview_post_link ( $url ) {
-//     $replace_url = str_replace( home_url().'/?p', home_url().'/wp.php?p', $url);
-//     return $replace_url;
-// }
-// add_filter('preview_post_link', 'replace_preview_post_link');
-// add_rewrite_rule('wp.php(.*)$', 'index.php?p=$matches[1]', 'top');

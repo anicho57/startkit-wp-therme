@@ -53,7 +53,7 @@ $themeSetting->change_excerpt_mblength_ex();
 // $themeSetting->desable_visual_editor_in_page_ex();
 
 // tinymceのメニューカスタマイズ
-$themeSetting->custom_editor_settings_ex();
+// $themeSetting->custom_editor_settings_ex();
 
 // 指定管理メニューの削除
 // $themeSetting->remove_admin_menus_ex();

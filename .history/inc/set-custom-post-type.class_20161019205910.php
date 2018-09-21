@@ -123,7 +123,6 @@ class setCustomPostType{
                 'add_new_item' => __('新しい' . $title . 'を追加'),
                 'edit_item' => __($title . 'を編集'),
                 'new_item' => __('新しい' . $title),
-                'all_items' => __($title . '一覧'),
                 'view_item' => __($title . 'を表示'),
                 'search_items' => __($title . 'を探す'),
                 'not_found' =>  __($title . 'はありません'),
