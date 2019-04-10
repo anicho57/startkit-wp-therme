@@ -182,7 +182,7 @@ class Theme_Setting{
         return $title;
     }
     function year_archives_link($html){
-        if(preg_match('/[0-9]+?<\/a>/', $html))
+        if(preg_match('/>([1-9]{1}[0-9]{3})<\/a>/', $html))
             $html = preg_replace('/([0-9]+?)<\/a>/', '$1年</a>', $html);
         if(preg_match('/title=[\'\"][0-9]+?[\'\"]/', $html))
             $html = preg_replace('/(title=[\'\"][0-9]+?)([\'\"])/', '$1年$2', $html);
@@ -200,7 +200,7 @@ class Theme_Setting{
         global $current_user;
         global $typenow;
         get_currentuserinfo();
-        if( $typenow == 'page' ){
+        if( in_array($typenow, array('page', 'mw-wp-form') )){
             add_filter('user_can_richedit', array($this,'disable_visual_editor_filter'));
         }
     }
@@ -713,5 +713,46 @@ class Theme_Setting{
         }
         return htmlspecialchars($first_dir);
     }
+
+    function wareki($date){
+        // 各元号の開始日
+        $meiji = new DateTime('1868-01-25');
+        $taisho = new DateTime('1912-07-30');
+        $showa = new DateTime('1926-12-25');
+        $heisei = new DateTime('1989-01-08');
+        $reiwa = new DateTime('2019-05-01');
+
+        if (is_string($date)){
+            $date = new DateTime($date);
+        }
+
+        $ret = array(
+            'gengo' => '西暦',
+            'year' => $date->format('Y'),
+            'month' => $date->format('n'),
+            'day' => $date->format('j')
+        );
+
+        if ($reiwa <= $date){
+            $ret['gengo'] = '令和';
+            $ret['year'] = $date->format('Y') - $reiwa->format('Y') + 1;
+        }elseif($heisei <= $date){
+            $ret['gengo'] = '平成';
+            $ret['year'] = $date->format('Y') - $heisei->format('Y') + 1;
+        }elseif($showa <= $date){
+            $ret['gengo'] = '昭和';
+            $ret['year'] = $date->format('Y') - $showa->format('Y') + 1;
+        }elseif($taisho <= $date){
+            $ret['gengo'] = '大正';
+            $ret['year'] = $date->format('Y') - $taisho->format('Y') + 1;
+        }elseif($meiji <= $date){
+            $ret['gengo'] = '明治';
+            $ret['year'] = $date->format('Y') - $meiji->format('Y') + 1;
+        }
+        $ret['disp'] = $ret['gengo'] . ($ret['year'] == 1 ? '元' : $ret['year']) . '年' . $ret['month'] . '月' . $ret['day'] . '日';
+
+        return $ret;
+    }
+
 }
 $themeSetting = new Theme_Setting();

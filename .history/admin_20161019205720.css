@@ -25,8 +25,3 @@
 .post-type-pickup #post-preview{
 	display: none;
 }
-
-.attachment-display-settings .link-to option[value="post"],
-.column-settings .link-to option[value="post"]{
-	display: none;
-}
