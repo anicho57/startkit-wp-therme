@@ -103,9 +103,9 @@ class Theme_Setting{
        }
        else {
             //テーマが無効になったとき
-            $role->remove_cap( 'manage_categories' );
-            $role->remove_cap( 'edit_others_posts' );
-            $role->remove_cap( 'delete_others_posts' );
+            // $role->remove_cap( 'manage_categories' );
+            // $role->remove_cap( 'edit_others_posts' );
+            // $role->remove_cap( 'delete_others_posts' );
         }
     }
 
@@ -269,6 +269,25 @@ class Theme_Setting{
         add_editor_style('editor-style.css');
     }
 
+    function get_posts($post_type = 'post', $post_count = 5 ){
+        $sticky = get_option( 'sticky_posts' );
+        $post_num = $post_count;
+        $args = array(
+            'post_type' => $post_type,
+            'posts_per_page'=> $post_count,
+        );
+        if (count($sticky) > 0){
+            $post_num -= count($sticky);
+            $sticky_post = new WP_Query(array_merge($args, array('post__in' => $sticky)));
+            $base_post = new WP_Query(array_merge($args, array('post__not_in' =>  $sticky,'posts_per_page' => $post_num)));
+            $the_query = new WP_Query();
+            $the_query->posts = array_merge( $sticky_post->posts, $base_post->posts );
+            $the_query->post_count = ($sticky_post->post_count + $base_post->post_count > $post_count) ? $post_count : $sticky_post->post_count + $base_post->post_count;
+        }else{
+            $the_query = new WP_Query($args);
+        }
+        return $the_query;
+    }
 
     // 指定管理メニューの削除
     function remove_admin_menus () {
