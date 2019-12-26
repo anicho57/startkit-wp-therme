@@ -9,7 +9,7 @@ class Theme_Setting{
      */
     public function __construct(){
 
-        date_default_timezone_set('Asia/Tokyo');
+        // date_default_timezone_set('Asia/Tokyo');
 
         // 不要なhead出力削除
         $this->remove_head();
@@ -61,6 +61,8 @@ class Theme_Setting{
         // 投稿権限のカスタマイズ DB（wp_options、wp_user_roles）に保存される
         add_action( 'load-themes.php', array($this, 'add_author_caps'));
 
+        // loading="lazy"の追加
+        add_filter( 'post_thumbnail_html', array($this, 'add_modify_post_thumbnail_html'), 10, 5 );
     }
 
     function remove_head(){
@@ -83,6 +85,11 @@ class Theme_Setting{
         remove_action('wp_head','wp_oembed_add_host_js');
         return false;
     }
+
+    function add_modify_post_thumbnail_html( $html, $post_id, $post_thumbnail_id, $size, $attr ) {
+        return str_replace( '<img', '<img loading="lazy"', $html );
+    }
+
 
     function remove_redirect_guess_404_permalink($redirect_url, $requested_url) {
       if(is_404()) {
@@ -182,7 +189,7 @@ class Theme_Setting{
         return $title;
     }
     function year_archives_link($html){
-        if(preg_match('/>([1-9]{1}[0-9]{3})<\/a>/', $html))
+        if(preg_match('/[0-9]+?<\/a>/', $html))
             $html = preg_replace('/([0-9]+?)<\/a>/', '$1年</a>', $html);
         if(preg_match('/title=[\'\"][0-9]+?[\'\"]/', $html))
             $html = preg_replace('/(title=[\'\"][0-9]+?)([\'\"])/', '$1年$2', $html);
@@ -200,7 +207,7 @@ class Theme_Setting{
         global $current_user;
         global $typenow;
         get_currentuserinfo();
-        if( in_array($typenow, array('page', 'mw-wp-form') )){
+        if( $typenow == 'page' ){
             add_filter('user_can_richedit', array($this,'disable_visual_editor_filter'));
         }
     }
@@ -214,8 +221,8 @@ class Theme_Setting{
 
     // アイキャッチ機能の有効化
     function use_eyecatch(){
-        add_theme_support('post-thumbnails', array( 'report' ));
-        set_post_thumbnail_size( 900, 9999, true );// サムネイルのサイズ
+        add_theme_support('post-thumbnails', array( 'post' ));
+        set_post_thumbnail_size( 600, 9999, true );// サムネイルのサイズ
     }
 
     function add_stylesheet(){
@@ -317,7 +324,7 @@ class Theme_Setting{
         $wp_admin_bar->remove_node('wp-logo');      //WordPressロゴ
         // $wp_admin_bar->remove_node('site-name');  //サイト名
         // $wp_admin_bar->remove_node('updates');  //アップデート通知
-        // $wp_admin_bar->remove_node('comments');   //コメント
+        $wp_admin_bar->remove_node('comments');   //コメント
         // $wp_admin_bar->remove_node('new-content');//新規追加
         // $wp_admin_bar->remove_node('new-media');    // メディア
         // $wp_admin_bar->remove_node('new-link');     // リンク
@@ -516,6 +523,42 @@ class Theme_Setting{
         return $output;
     }
 
+    function get_category_tree(){
+        $cats = $sort = array();
+        $post_cats = get_the_category();
+        foreach ($post_cats as $cat) {
+            $layer = count(get_ancestors($cat->term_id, 'category'));
+            $cats[] = array(
+                'name' => $cat->name,
+                'cat_ID' => $cat->cat_ID,
+                'parent_ID' => $cat->category_parent,
+                'layer' => $layer
+            );
+            $sort[] = $layer;
+        }
+        array_multisort($sort, SORT_DESC, $cats);
+        while ( true ){
+            $cats = $this->get_parent_cat($cats);
+            if( $cats == $this->get_parent_cat($cats) ){
+                break;
+            }
+        }
+        return $cats;
+    }
+
+    function get_parent_cat($cats){
+        if (end($cats)['parent_ID'] !== 0){
+            $cat = get_category( end($cats)['parent_ID'] );
+            $cats[] = array(
+                'name' => $cat->name,
+                'cat_ID' => $cat->cat_ID,
+                'parent_ID' => $cat->category_parent
+            );
+            $this->get_parent_cat($cats);
+        }
+        return $cats;
+    }
+
 
     /**
      * 記事に所属している指定カテゴリIDの子を取得
@@ -558,17 +601,42 @@ class Theme_Setting{
     function get_post_thumb_image($size = 'thumbnail'){
         global $post, $posts;
         // 記事内から最初のimgタグのsrc部を取得
-        $image_url = $this->get_content_image_url();
-        // URLから画像のID番号を取得
-        $image_id = $this->get_url_to_attachment_id($image_url);
-        if ($image_id){
-            // 画像IDがあればそこからサムネイルサイズの画像URLを取得
-            $image = '<img src="'.$this->get_attachment_image($image_id, $size).'" alt="" />';
-        }else{
-            // なければサムネイルサイズの widht を入れる
-            $image = '<img src="'.$image_url.'" width="'.get_option($size . '_size_w').'" alt="" />';
+        $image = get_the_post_thumbnail();
+        // var_dump($image);
+        if ($image === ""){
+            $image_url = $this->get_content_image_url();
+            // URLから画像のID番号を取得
+            $image_id = $this->get_url_to_attachment_id($image_url);
+            if ($image_id){
+                // 画像IDがあればそこからサムネイルサイズの画像URLを取得
+                $image = '<img src="'.$this->get_attachment_image($image_id, $size).'" alt="" loading="lazy" />';
+            }else{
+                // なければサムネイルサイズの widht を入れる
+                $image = '<img src="'.$image_url.'" width="'.get_option($size . '_size_w').'" alt="" loading="lazy" />';
+            }
         }
         return $image;
+    }
+    function get_post_thumb_image_src($size = 'thumbnail'){
+        global $post, $posts;
+        $image_src = '';
+        if ( has_post_thumbnail() ) {
+            $image_id = get_post_thumbnail_id ();
+            $image_url = wp_get_attachment_image_src ($image_id, true);
+            $image_src = $image_url[0];
+        }else{
+            $image_url = $this->get_content_image_url();
+            // URLから画像のID番号を取得
+            $image_id = $this->get_url_to_attachment_id($image_url);
+            if ($image_id){
+                // 画像IDがあればそこからサムネイルサイズの画像URLを取得
+                $image_src = $this->get_attachment_image($image_id, $size);
+            }else{
+                // なければサムネイルサイズの widht を入れる
+                $image_src = $image_url;
+            }
+        }
+        return $image_src . '?v=2';
     }
     function the_post_thumb_image($size = 'thumbnail'){
         echo $this->get_post_thumb_image($size);
@@ -713,6 +781,7 @@ class Theme_Setting{
 
     function get_base_path(){
         $b_path = str_replace("index.php","",$_SERVER['PHP_SELF']);
+        $b_path = str_replace("wp.php","",$b_path);
         $b_path = str_replace("index.html","",$b_path);
         $b_path = str_replace('app/', '', $b_path);
         return $b_path;
