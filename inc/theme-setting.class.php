@@ -276,20 +276,15 @@ class Theme_Setting{
         add_editor_style('editor-style.css');
     }
 
-    function get_posts($post_type = 'post', $post_count = 5 ){
+    function get_posts($args = array('post_type' => 'post','posts_per_page'=> 5,) ){
         $sticky = get_option( 'sticky_posts' );
-        $post_num = $post_count;
-        $args = array(
-            'post_type' => $post_type,
-            'posts_per_page'=> $post_count,
-        );
+        $post_num = $args['posts_per_page'];
         if (count($sticky) > 0){
-            $post_num -= count($sticky);
             $sticky_post = new WP_Query(array_merge($args, array('post__in' => $sticky)));
             $base_post = new WP_Query(array_merge($args, array('post__not_in' =>  $sticky,'posts_per_page' => $post_num)));
             $the_query = new WP_Query();
             $the_query->posts = array_merge( $sticky_post->posts, $base_post->posts );
-            $the_query->post_count = ($sticky_post->post_count + $base_post->post_count > $post_count) ? $post_count : $sticky_post->post_count + $base_post->post_count;
+            $the_query->post_count = ($sticky_post->post_count + $base_post->post_count > $post_num) ? $post_num : $sticky_post->post_count + $base_post->post_count;
         }else{
             $the_query = new WP_Query($args);
         }
@@ -301,18 +296,45 @@ class Theme_Setting{
         global $menu;
         $user = wp_get_current_user();
         if( isset($user->roles[0]) && $user->roles[0] != 'administrator'){
-            $removeMenu = array(
-                    '固定ページ',
-                    'コメント',
-                    'ツール',
-                    // 'Smart Custom Fields',
-                );
-            end ($menu);
-            foreach ($menu as $key => $value) {
-                $name = explode(' <',$value[0]);
-                if (in_array(reset($name),$removeMenu))
-                    unset($menu[$key]);
-            }
+            // remove_menu_page( 'index.php' );                           // ダッシュボード
+            // remove_menu_page( 'edit.php' );                            // 投稿
+            // remove_menu_page( 'upload.php' );                          // メディア
+            remove_menu_page( 'edit.php?post_type=page' );                // 固定ページ
+            remove_menu_page( 'edit-comments.php' );                      // コメント
+            // remove_menu_page( 'themes.php' );                          // 外観
+            // remove_menu_page( 'plugins.php' );                         // プラグイン
+            // remove_menu_page( 'users.php' );                           // ユーザー
+            remove_menu_page( 'tools.php' );                              // ツール
+            // remove_menu_page( 'profile.php' );                         // プロフィール
+            // remove_menu_page( 'options-general.php' );                 // 設定
+
+            // global $submenu;
+            // var_dump($submenu);
+            // remove_submenu_page('edit.php', 'post-new.php');
+
+            // 投稿画面
+            // remove_meta_box( 'categorydiv','post','side');             // カテゴリー
+            // remove_meta_box( 'postcustom' , 'post' , 'normal' );       // カスタムフィールド
+            // remove_meta_box( 'postexcerpt' , 'post' , 'normal' );      // 抜粋
+            // remove_meta_box( 'commentsdiv' , 'post' , 'normal' );      // コメント
+            // remove_meta_box( 'tagsdiv-post_tag' , 'post' , 'side' );   // タグ
+            // remove_meta_box( 'trackbacksdiv' , 'post' , 'normal' );    // トラックバック
+            // remove_meta_box( 'commentstatusdiv' , 'post' , 'normal' ); // ディスカッション
+            // remove_meta_box( 'slugdiv','post','normal');               // スラッグ
+            // remove_meta_box( 'authordiv','post','normal' );            // 作成者
+            // remove_meta_box( 'revisionsdiv','post','normal' );         // リビジョン
+
+            // 固定ページ
+            // remove_meta_box( 'postcustom' , 'page' , 'normal' );       // カスタムフィールド
+            // remove_meta_box( 'postexcerpt' , 'page' , 'normal' );      // 抜粋
+            // remove_meta_box( 'commentsdiv' , 'page' , 'normal' );      // コメント
+            // remove_meta_box( 'tagsdiv-post_tag' , 'page' , 'side' );   // タグ
+            // remove_meta_box( 'trackbacksdiv' , 'page' , 'normal' );    // トラックバック
+            // remove_meta_box( 'commentstatusdiv' , 'page' , 'normal' ); // ディスカッション
+            // remove_meta_box( 'slugdiv','page','normal');               // スラッグ
+            // remove_meta_box( 'authordiv','page','normal' );            // 作成者
+            // remove_meta_box( 'revisionsdiv','page','normal' );         // リビジョン
+            // remove_meta_box( 'pageparentdiv','page','side');           // ページ属性
         }
     }
     function remove_admin_menus_ex(){
